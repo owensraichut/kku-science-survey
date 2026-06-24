@@ -64,6 +64,9 @@
                         <div class="form-group">
                             <label for="studentId">รหัสประจำตัวนักเรียน (5 หลัก) *</label>
                             <input type="text" id="studentId" placeholder="เช่น 12345" pattern="[0-9]{5}" maxlength="5" title="กรุณากรอกตัวเลข 5 หลัก" required>
+                            <small style="color: var(--primary-light); cursor: pointer; text-decoration: underline; margin-top: 5px; display: inline-block; font-size: 0.8rem;" onclick="scrollToLookup()">
+                                🔍 เคยลงทะเบียนแล้ว? คลิกที่นี่เพื่อค้นหาและดูบัตรประจำตัว
+                            </small>
                         </div>
                         <div class="form-group">
                             <label for="classLevel">ระดับชั้น *</label>
@@ -89,7 +92,7 @@
                 <section class="form-section">
                     <h2 class="section-title">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                        2. เลือกรายการแข่งขัน/ประกวดที่สนใจ (เลือกได้มากกว่า 1 รายการ)
+                        2. เลือกรายการแข่งขัน/ประกวดที่สนใจ (เลือกได้ 1 รายการเท่านั้น)
                     </h2>
                     
                     <div class="activity-grid">
@@ -392,6 +395,18 @@
                 </div>
 
             </form>
+
+            <!-- Retrieval Card (ค้นหาบัตรประจำตัวย้อนหลัง) -->
+            <div class="no-print" style="margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 30px;">
+                <div style="background: rgba(255, 255, 255, 0.03); border: 1px dashed var(--card-border); border-radius: var(--radius-md); padding: 25px; text-align: center; backdrop-filter: blur(10px); box-shadow: var(--shadow-sm);">
+                    <h4 style="margin-bottom: 8px; color: white; font-weight:600; font-size:1.1rem;">🔍 พิมพ์บัตรประจำตัวผู้สมัครย้อนหลัง</h4>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px;">เคยกรอกแบบสำรวจแล้ว? ป้อนรหัสนักเรียน 5 หลักเพื่อตรวจสอบสิทธิ์ ค้นหา และพิมพ์บัตรคัดเลือกอีกครั้ง</p>
+                    <div style="display:flex; justify-content:center; gap: 10px; max-width: 400px; margin: 0 auto; flex-wrap: wrap;">
+                        <input type="text" id="lookupStudentId" placeholder="รหัสนักเรียน 5 หลัก" pattern="[0-9]{5}" maxlength="5" style="background: rgba(15,23,42,0.8); border: 1px solid var(--card-border); color: white; border-radius: 4px; padding: 10px; font-family: var(--font-en); font-size: 0.95rem; width: 160px; text-align:center; outline:none;" onkeypress="handleLookupKeyPress(event)">
+                        <button type="button" class="btn btn-secondary" style="padding: 10px 20px; font-size: 0.9rem; font-weight: 600;" onclick="handleTicketLookup()">ค้นหาตั๋ว</button>
+                    </div>
+                </div>
+            </div>
 
             <!-- Success Card (แสดงหลังบันทึกเสร็จ) -->
             <div id="successCard" class="success-card">

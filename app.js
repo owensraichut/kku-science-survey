@@ -304,18 +304,46 @@ async function handleFormSubmit(event) {
 
     try {
         if (supabaseClient) {
-            // โหมดเชื่อมต่อ Supabase จริง
-            const { data, error } = await supabaseClient
+            // เช็คว่าลงทะเบียนซ้ำหรือไม่
+            const { data: existingRecords, error: checkError } = await supabaseClient
                 .from("student_surveys")
-                .insert([surveyData]);
+                .select("*")
+                .eq("student_id", studentId);
+
+            if (checkError) throw checkError;
+
+            if (existingRecords && existingRecords.length > 0) {
+                showToast("ข้อมูลซ้ำ", "รหัสนักเรียนนี้เคยลงทะเบียนไว้แล้ว ระบบจะเปิดบัตรเดิมให้คุณ", "info");
+                showSuccessView(existingRecords[0]);
+                return;
+            }
+
+            // โหมดเชื่อมต่อ Supabase จริง
+            const { data: insertedData, error } = await supabaseClient
+                .from("student_surveys")
+                .insert([surveyData])
+                .select();
 
             if (error) throw error;
+
+            if (insertedData && insertedData.length > 0) {
+                surveyData.id = insertedData[0].id;
+                surveyData.created_at = insertedData[0].created_at;
+            }
             showToast("สำเร็จ", "ส่งแบบสำรวจไปยัง Supabase เรียบร้อยแล้ว", "success");
         } else {
             // โหมด LocalStorage Demo Fallback
             let existingData = localStorage.getItem("student_surveys");
             existingData = existingData ? JSON.parse(existingData) : [];
             
+            // เช็คว่าลงทะเบียนซ้ำหรือไม่
+            const existingRecord = existingData.find(row => row.student_id === studentId);
+            if (existingRecord) {
+                showToast("ข้อมูลซ้ำ", "รหัสนักเรียนนี้เคยลงทะเบียนไว้แล้ว ระบบจะเปิดบัตรเดิมให้คุณ", "info");
+                showSuccessView(existingRecord);
+                return;
+            }
+
             // สร้าง ID จำลองสำหรับแถว
             surveyData.id = Date.now();
             surveyData.created_at = new Date().toISOString();
@@ -352,8 +380,8 @@ async function showSuccessView(data) {
     // ตั้งค่ารหัสการสมัครและข้อมูลทั่วไป
     const regTime = data.created_at ? new Date(data.created_at) : new Date();
     const formattedTime = regTime.toLocaleString('th-TH');
-    const randomSuffix = Math.floor(100 + Math.random() * 900);
-    const ticketId = `REG-${data.student_id}-${randomSuffix}`;
+    const ticketSuffix = data.id ? (Number(data.id) % 900 + 100) : Math.floor(100 + Math.random() * 900);
+    const ticketId = `REG-${data.student_id}-${ticketSuffix}`;
 
     document.getElementById("ticketRegId").innerText = ticketId;
     document.getElementById("ticketStudentName").innerText = data.student_name;
@@ -483,4 +511,82 @@ function showToast(title, message, type = "info") {
             container.removeChild(toast);
         }, 300);
     }, 4000);
+}
+
+/**
+ * 10. ระบบตรวจสอบและค้นหาบัตรประจำตัวผู้สมัครย้อนหลัง
+ */
+async function handleTicketLookup() {
+    const lookupId = document.getElementById("lookupStudentId").value.trim();
+
+    if (!lookupId) {
+        showToast("ข้อมูลไม่ครบถ้วน", "กรุณากรอกรหัสนักเรียน 5 หลัก", "error");
+        return;
+    }
+
+    if (lookupId.length !== 5 || isNaN(lookupId)) {
+        showToast("ข้อมูลไม่ถูกต้อง", "รหัสนักเรียนต้องเป็นตัวเลข 5 หลัก", "error");
+        return;
+    }
+
+    try {
+        let foundRecord = null;
+
+        if (supabaseClient) {
+            // ค้นหาจาก Supabase
+            const { data, error } = await supabaseClient
+                .from("student_surveys")
+                .select("*")
+                .eq("student_id", lookupId);
+
+            if (error) throw error;
+
+            if (data && data.length > 0) {
+                foundRecord = data[0];
+            }
+        } else {
+            // ค้นหาจาก LocalStorage
+            let localData = localStorage.getItem("student_surveys");
+            let allRows = localData ? JSON.parse(localData) : [];
+            foundRecord = allRows.find(row => row.student_id === lookupId);
+        }
+
+        if (foundRecord) {
+            showToast("พบข้อมูล", "กำลังเปิดบัตรประจำตัวผู้สมัครของคุณ", "success");
+            showSuccessView(foundRecord);
+        } else {
+            showToast("ไม่พบข้อมูล", "ไม่พบรหัสประจำตัวนี้ในระบบลงทะเบียน", "error");
+        }
+    } catch (error) {
+        console.error("Lookup Error:", error);
+        showToast("เกิดข้อผิดพลาด", "ไม่สามารถค้นหาข้อมูลได้: " + error.message, "error");
+    }
+}
+
+/**
+ * 11. ฟังก์ชันรับการกดปุ่ม Enter ในช่องค้นหาบัตรประจำตัว
+ */
+function handleLookupKeyPress(event) {
+    if (event.key === "Enter") {
+        handleTicketLookup();
+    }
+}
+
+/**
+ * 12. ฟังก์ชันเลื่อนหน้าจอไปยังส่วนค้นหาบัตรประจำตัว
+ */
+function scrollToLookup() {
+    const lookupInput = document.getElementById("lookupStudentId");
+    if (lookupInput) {
+        // เลื่อนหน้าจอไปที่ช่องค้นหา
+        lookupInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        lookupInput.focus();
+        
+        // แสดงแสงกะพริบรอบๆ ช่องเพื่อนำสายตา
+        lookupInput.style.transition = "box-shadow 0.3s ease";
+        lookupInput.style.boxShadow = "0 0 20px var(--primary-light)";
+        setTimeout(() => {
+            lookupInput.style.boxShadow = "";
+        }, 1500);
+    }
 }
