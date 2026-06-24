@@ -342,17 +342,72 @@ async function handleFormSubmit(event) {
  * 6. แสดงหน้ายืนยันความสำเร็จ
  * @param {Object} data 
  */
-function showSuccessView(data) {
+async function showSuccessView(data) {
     document.getElementById("surveyForm").style.display = "none";
     document.getElementById("successCard").style.display = "block";
     
-    document.getElementById("summaryName").innerText = data.student_name;
-    document.getElementById("summaryClass").innerText = `${data.class_level}/${data.class_room} เลขที่ ${data.class_no}`;
-    document.getElementById("summaryId").innerText = data.student_id;
-    document.getElementById("summaryCount").innerText = `${data.interests.length} รายการ`;
+    // ดึงกิจกรรมที่เลือก (เนื่องจากเลือกได้ 1 รายการ จึงอยู่ที่ดัชนี 0)
+    const selectedActivity = data.interests[0];
+    
+    // ตั้งค่ารหัสการสมัครและข้อมูลทั่วไป
+    const regTime = data.created_at ? new Date(data.created_at) : new Date();
+    const formattedTime = regTime.toLocaleString('th-TH');
+    const randomSuffix = Math.floor(100 + Math.random() * 900);
+    const ticketId = `REG-${data.student_id}-${randomSuffix}`;
+
+    document.getElementById("ticketRegId").innerText = ticketId;
+    document.getElementById("ticketStudentName").innerText = data.student_name;
+    document.getElementById("ticketStudentId").innerText = data.student_id;
+    document.getElementById("ticketClass").innerText = `${data.class_level}/${data.class_room} (เลขที่ ${data.class_no})`;
+    document.getElementById("ticketActivity").innerText = selectedActivity.name;
+    document.getElementById("ticketTime").innerText = formattedTime;
+
+    // แสดงสาขาโครงงานวิทยาศาสตร์ย่อยเพิ่มเติม (ถ้ามี)
+    const branchRow = document.getElementById("ticketBranchRow");
+    if (selectedActivity.id === 1 && selectedActivity.branch) {
+        branchRow.style.display = "flex";
+        document.getElementById("ticketBranch").innerText = selectedActivity.branch;
+    } else {
+        branchRow.style.display = "none";
+    }
+
+    // คำนวณสถิติจำนวนคู่แข่งที่สมัครในกิจกรรมเดียวกัน
+    let competitorCount = 1; // เริ่มต้นที่ 1 (ตัวผู้สมัครเอง)
+    try {
+        if (supabaseClient) {
+            const { data: allRows, error } = await supabaseClient
+                .from("student_surveys")
+                .select("interests");
+            
+            if (!error && allRows) {
+                competitorCount = allRows.filter(row => 
+                    row.interests && row.interests.some(i => i.id === selectedActivity.id)
+                ).length;
+            }
+        } else {
+            let localData = localStorage.getItem("student_surveys");
+            let allRows = localData ? JSON.parse(localData) : [];
+            competitorCount = allRows.filter(row => 
+                row.interests && row.interests.some(i => i.id === selectedActivity.id)
+            ).length;
+        }
+    } catch (err) {
+        console.error("Error counting competitors:", err);
+    }
+
+    // อัปเดตข้อมูลคู่แข่งลงหน้าจอ
+    document.getElementById("competitorActivityName").innerText = selectedActivity.name;
+    document.getElementById("competitorCount").innerText = competitorCount;
     
     // ดันหน้าจอขึ้นด้านบนสุด
     window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/**
+ * 6.1 ฟังก์ชันสำหรับสั่งพิมพ์ / บันทึกบัตรประจำตัวการสมัคร
+ */
+function printTicket() {
+    window.print();
 }
 
 /**

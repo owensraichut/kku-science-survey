@@ -397,19 +397,64 @@
             <div id="successCard" class="success-card">
                 <div class="success-icon-wrapper">✓</div>
                 <h2 class="success-title">ส่งข้อมูลแบบสำรวจสำเร็จ!</h2>
-                <p class="success-text">บันทึกข้อมูลความสนใจในการเข้าร่วมแข่งขันสัปดาห์วิทยาศาสตร์ มข. 2569 เรียบร้อยแล้ว</p>
+                <p class="success-text">ข้อมูลความสนใจของคุณได้รับการบันทึกเรียบร้อยแล้ว กรุณาพิมพ์หรือบันทึกบัตรคัดเลือกด้านล่างไว้เป็นหลักฐาน</p>
                 
-                <div class="success-details">
-                    <h4>ข้อมูลการลงทะเบียนของคุณ</h4>
-                    <p>ชื่อ-นามสกุล: <span id="summaryName"></span></p>
-                    <p>ระดับชั้น: <span id="summaryClass"></span></p>
-                    <p>รหัสนักเรียน: <span id="summaryId"></span></p>
-                    <p>กิจกรรมที่สนใจ: <span id="summaryCount">0 รายการ</span></p>
+                <!-- สถิติจำนวนคู่แข่ง (ดึงข้อมูลมาแสดงแบบเรียลไทม์) -->
+                <div class="competitor-stats-box">
+                    <span class="fire-icon">🔥</span>
+                    <span>สถิติจำนวนคู่แข่ง: ขณะนี้มีเพื่อนๆ นักเรียน SMT สมัครในกิจกรรม 
+                        <strong id="competitorActivityName" style="color:white;">...</strong> แล้วทั้งหมด 
+                        <strong id="competitorCount" style="color: var(--accent-light); font-size: 1.25rem;">0</strong> คน (รวมคุณด้วย)
+                    </span>
                 </div>
 
-                <div style="display:flex; justify-content:center; gap: 15px;">
+                <!-- บัตรประจำตัวผู้สมัคร (Printable Registration Pass) -->
+                <div class="ticket-card" id="printableTicket">
+                    <div class="ticket-header">
+                        <div class="ticket-header-title">KKU SCIENCE WEEK 2569</div>
+                        <div class="ticket-header-subtitle">บัตรลงทะเบียนคัดเลือกตัวแทนแข่งขัน (ม.4-6 SMT)</div>
+                    </div>
+                    <div class="ticket-body">
+                        <div class="ticket-row">
+                            <span class="ticket-label">รหัสการสมัคร (Ticket ID)</span>
+                            <span class="ticket-value" id="ticketRegId">REG-1719XXXXXX</span>
+                        </div>
+                        <div class="ticket-row">
+                            <span class="ticket-label">ชื่อ - นามสกุล</span>
+                            <span class="ticket-value" id="ticketStudentName">-</span>
+                        </div>
+                        <div class="ticket-row">
+                            <span class="ticket-label">รหัสนักเรียน</span>
+                            <span class="ticket-value" id="ticketStudentId">-</span>
+                        </div>
+                        <div class="ticket-row">
+                            <span class="ticket-label">ระดับชั้นเรียน</span>
+                            <span class="ticket-value" id="ticketClass">-</span>
+                        </div>
+                        <div class="ticket-row">
+                            <span class="ticket-label">กิจกรรมที่เลือก</span>
+                            <span class="ticket-value" id="ticketActivity" style="color: var(--accent-light); font-weight: 700;">-</span>
+                        </div>
+                        <div class="ticket-row" id="ticketBranchRow" style="display:none;">
+                            <span class="ticket-label">สาขาโครงงานวิทยาศาสตร์</span>
+                            <span class="ticket-value" id="ticketBranch" style="color: var(--primary-light);">-</span>
+                        </div>
+                    </div>
+                    <div class="ticket-footer">
+                        <div class="ticket-time">ลงทะเบียนเมื่อ: <span id="ticketTime">-</span></div>
+                        <div class="barcode">
+                            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ปุ่มควบคุมการทำงาน -->
+                <div class="ticket-actions no-print" style="display:flex; justify-content:center; gap: 15px; margin-top: 25px; flex-wrap: wrap;">
                     <button class="btn btn-secondary" onclick="backToForm()">ลงทะเบียนคนถัดไป</button>
-                    <a href="dashboard.html" class="btn btn-primary" style="text-decoration:none;">ดูหน้า Dashboard ครู</a>
+                    <button class="btn btn-primary" onclick="printTicket()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:5px;"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                        พิมพ์ / เซฟรูปบัตรนี้
+                    </button>
                 </div>
             </div>
 
