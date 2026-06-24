@@ -23,10 +23,10 @@
             </div>
             <div class="hero-content">
                 <span class="hero-tag">Science Week 2569</span>
-                <h1 class="hero-title">แบบสำรวจความสนใจเข้าร่วมการประกวดและการแข่งขัน</h1>
+                <h1 class="hero-title">แบบสำรวจความสนใจเพื่อคัดเลือกตัวแทนประกวดแข่งขัน</h1>
                 <p class="hero-subtitle">
-                    งานสัปดาห์วิทยาศาสตร์แห่งชาติ ประจำปี 2569 ณ คณะวิทยาศาสตร์ มหาวิทยาลัยขอนแก่น
-                    <br>ระหว่างวันที่ 17 - 19 สิงหาคม 2569
+                    เพื่อคัดเลือกตัวแทนนักเรียนเข้าร่วมประกวดแข่งขันในงานสัปดาห์วิทยาศาสตร์แห่งชาติ ประจำปี 2569
+                    <br>ณ คณะวิทยาศาสตร์ มหาวิทยาลัยขอนแก่น (จัดงานระหว่างวันที่ 17 - 19 สิงหาคม 2569)
                 </p>
                 <div class="hero-meta">
                     <div class="hero-meta-item">
@@ -39,7 +39,7 @@
                     </div>
                     <div class="hero-meta-item">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                        <span>สำหรับนักเรียน ม.ต้น - ม.ปลาย</span>
+                        <span>เฉพาะห้อง ม.4 - ม.6 SMT</span>
                     </div>
                 </div>
             </div>
@@ -69,9 +69,6 @@
                             <label for="classLevel">ระดับชั้น *</label>
                             <select id="classLevel" required onchange="filterActivitiesByGrade()">
                                 <option value="" disabled selected>-- เลือกชั้นเรียน --</option>
-                                <option value="ม.1">มัธยมศึกษาปีที่ 1</option>
-                                <option value="ม.2">มัธยมศึกษาปีที่ 2</option>
-                                <option value="ม.3">มัธยมศึกษาปีที่ 3</option>
                                 <option value="ม.4">มัธยมศึกษาปีที่ 4</option>
                                 <option value="ม.5">มัธยมศึกษาปีที่ 5</option>
                                 <option value="ม.6">มัธยมศึกษาปีที่ 6</option>
@@ -79,7 +76,7 @@
                         </div>
                         <div class="form-group">
                             <label for="classRoom">ห้องเรียน *</label>
-                            <input type="text" id="classRoom" placeholder="เช่น 1 หรือ 4/2" required>
+                            <input type="text" id="classRoom" value="SMT" readonly style="background: rgba(15, 23, 42, 0.4); color: var(--text-muted); cursor: not-allowed;" required>
                         </div>
                         <div class="form-group">
                             <label for="classNo">เลขที่ *</label>

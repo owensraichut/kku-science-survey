@@ -139,25 +139,26 @@ async function fetchSurveyData() {
 function updateMetricsAndCharts() {
     // 4.1 คำนวณสถิติตัวเลข (Metrics)
     const totalStudents = filteredSurveys.length;
-    let juniorCount = 0;
-    let seniorCount = 0;
+    let m4Count = 0;
+    let m5Count = 0;
+    let m6Count = 0;
 
     // โครงสร้างสำหรับนับสถิติตามกิจกรรม
     const activityCounts = { 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0, 10:0 };
     
-    // โครงสร้างสถิติแยกตามชั้นเรียน
-    const gradeCounts = { "ม.1":0, "ม.2":0, "ม.3":0, "ม.4":0, "ม.5":0, "ม.6":0 };
+    // โครงสร้างสถิติแยกตามชั้นเรียน (เฉพาะ ม.4 - ม.6 ห้อง SMT)
+    const gradeCounts = { "ม.4":0, "ม.5":0, "ม.6":0 };
     
     // โครงสร้างสถิติสาขาโครงงาน ม.ปลาย
     const branchCounts = { "สาขากายภาพ":0, "สาขาชีวภาพ":0, "สาขาวิทยาศาสตร์ประยุกต์":0 };
 
     filteredSurveys.forEach(survey => {
-        const isJunior = ["ม.1", "ม.2", "ม.3"].includes(survey.class_level);
-        
-        if (isJunior) {
-            juniorCount++;
-        } else {
-            seniorCount++;
+        if (survey.class_level === "ม.4") {
+            m4Count++;
+        } else if (survey.class_level === "ม.5") {
+            m5Count++;
+        } else if (survey.class_level === "ม.6") {
+            m6Count++;
         }
 
         // นับสถิติรายห้องเรียน / ชั้นเรียน
@@ -185,8 +186,9 @@ function updateMetricsAndCharts() {
 
     // แสดงผลตัวเลขในหน้า HTML
     document.getElementById("metricTotalStudents").innerText = totalStudents;
-    document.getElementById("metricJuniorEnrollments").innerText = juniorCount;
-    document.getElementById("metricSeniorEnrollments").innerText = seniorCount;
+    document.getElementById("metricM4Count").innerText = m4Count;
+    document.getElementById("metricM5Count").innerText = m5Count;
+    document.getElementById("metricM6Count").innerText = m6Count;
 
     // 4.2 วาดกราฟแท่ง (Bar Chart) - จำนวนคนในแต่ละกิจกรรม
     drawActivitiesChart(activityCounts);
@@ -567,43 +569,30 @@ async function generateMockData() {
         // สุ่มรหัส 5 หลัก
         const studentId = Math.floor(10000 + Math.random() * 90000).toString();
         
-        // สุ่มระดับชั้น
-        const classLevel = `ม.${Math.floor(1 + Math.random() * 6)}`;
-        const classRoom = classRooms[Math.floor(Math.random() * classRooms.length)];
+        // สุ่มระดับชั้น (ม.4 - ม.6 SMT)
+        const classLevel = `ม.${Math.floor(4 + Math.random() * 3)}`; // ม.4, ม.5, ม.6
+        const classRoom = "SMT";
         const classNo = Math.floor(1 + Math.random() * 45);
 
-        // วิเคราะห์ว่านักเรียนเป็น ม.ต้น หรือ ม.ปลาย
-        const isJunior = ["ม.1", "ม.2", "ม.3"].includes(classLevel);
         const selectedInterests = [];
 
-        // สุ่มกิจกรรม (เลือก 1 กิจกรรมเท่านั้นตามกติกาใหม่)
-        if (isJunior) {
-            // กิจกรรม ม.ต้น และ กิจกรรมทั่วไป (6, 7, 8, 9, 10)
-            const availableJuniorIds = [6, 7, 8, 9, 10];
-            const selectedId = availableJuniorIds[Math.floor(Math.random() * availableJuniorIds.length)];
-            
-            selectedInterests.push({
-                id: selectedId,
-                name: ACTIVITY_NAMES[selectedId]
-            });
-        } else {
-            // กิจกรรม ม.ปลาย และ กิจกรรมทั่วไป (1, 2, 3, 4, 5, 6, 8, 9, 10)
-            const availableSeniorIds = [1, 2, 3, 4, 5, 6, 8, 9, 10];
-            const selectedId = availableSeniorIds[Math.floor(Math.random() * availableSeniorIds.length)];
-            
-            const interestObj = {
-                id: selectedId,
-                name: ACTIVITY_NAMES[selectedId]
-            };
-            
-            // ถ้าเป็นโครงงานวิทย์ (ID=1) ให้เพิ่มฟิลด์สาขาโครงงาน
-            if (selectedId === 1) {
-                const branches = ["สาขากายภาพ", "สาขาชีวภาพ", "สาขาวิทยาศาสตร์ประยุกต์"];
-                interestObj.branch = branches[Math.floor(Math.random() * branches.length)];
-            }
-            
-            selectedInterests.push(interestObj);
+        // กิจกรรม ม.ปลาย และ กิจกรรมทั่วไป (1, 2, 3, 4, 5, 6, 8, 9, 10)
+        // กิจกรรมที่ 7 (Science Show ม.ต้น) ถูกตัดออกเพราะสุ่มระดับชั้น ม.ปลาย SMT ทั้งหมด
+        const availableSeniorIds = [1, 2, 3, 4, 5, 6, 8, 9, 10];
+        const selectedId = availableSeniorIds[Math.floor(Math.random() * availableSeniorIds.length)];
+        
+        const interestObj = {
+            id: selectedId,
+            name: ACTIVITY_NAMES[selectedId]
+        };
+        
+        // ถ้าเป็นโครงงานวิทย์ (ID=1) ให้เพิ่มฟิลด์สาขาโครงงาน
+        if (selectedId === 1) {
+            const branches = ["สาขากายภาพ", "สาขาชีวภาพ", "สาขาวิทยาศาสตร์ประยุกต์"];
+            interestObj.branch = branches[Math.floor(Math.random() * branches.length)];
         }
+        
+        selectedInterests.push(interestObj);
 
         const surveyItem = {
             student_name: studentName,

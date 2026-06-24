@@ -35,34 +35,39 @@
         <!-- Dashboard Header -->
         <div class="dashboard-header">
             <div>
-                <h1 class="hero-title" style="font-size: 1.8rem;">แดชบอร์ดสรุปผลการตอบแบบสำรวจความสนใจ</h1>
+                <h1 class="hero-title" style="font-size: 1.8rem;">ระบบสรุปผลเพื่อคัดเลือกตัวแทนประกวดแข่งขัน</h1>
                 <p style="color: var(--text-muted); font-size: 0.95rem;">
-                    สรุปผลและรายงานสถิตินักเรียนที่สนใจเข้าร่วมแข่งขัน สัปดาห์วิทยาศาสตร์ มข. 2569
+                    สรุปสถิตินักเรียน ม.4 - ม.6 SMT ที่สนใจสมัครเข้ารับการคัดเลือกเป็นตัวแทนในสัปดาห์วิทยาศาสตร์ มข. 2569
                 </p>
             </div>
-            <div style="display:flex; gap:10px;">
+            <div style="display:flex; gap:10px; align-items:center;">
                 <a href="index.html" class="btn btn-secondary" style="padding:10px 18px; font-size:0.9rem;">
                     ← ไปหน้าฟอร์มกรอกข้อมูล
                 </a>
             </div>
         </div>
 
-        <!-- Summary Metric Cards -->
+        <!-- Summary Metric Cards (ม.4 - ม.6 ห้อง SMT) -->
         <div class="metrics-grid">
             <div class="metric-card">
-                <span class="metric-label">จำนวนนักเรียนที่ตอบแบบสำรวจทั้งหมด</span>
+                <span class="metric-label">จำนวนนักเรียนทั้งหมด (SMT)</span>
                 <span class="metric-value" id="metricTotalStudents">0</span>
-                <span class="metric-desc">คน (กรอกแบบสำรวจรายบุคคล)</span>
+                <span class="metric-desc">คน (ม.4 - ม.6 ห้อง SMT)</span>
             </div>
             <div class="metric-card">
-                <span class="metric-label">จำนวนนักเรียน ม.ต้น</span>
-                <span class="metric-value" id="metricJuniorEnrollments">0</span>
-                <span class="metric-desc">คน (ระดับชั้น ม.1 - ม.3)</span>
+                <span class="metric-label">นักเรียนชั้น ม.4 SMT</span>
+                <span class="metric-value" id="metricM4Count">0</span>
+                <span class="metric-desc">คน</span>
             </div>
             <div class="metric-card">
-                <span class="metric-label">จำนวนนักเรียน ม.ปลาย</span>
-                <span class="metric-value" id="metricSeniorEnrollments">0</span>
-                <span class="metric-desc">คน (ระดับชั้น ม.4 - ม.6)</span>
+                <span class="metric-label">นักเรียนชั้น ม.5 SMT</span>
+                <span class="metric-value" id="metricM5Count">0</span>
+                <span class="metric-desc">คน</span>
+            </div>
+            <div class="metric-card">
+                <span class="metric-label">นักเรียนชั้น ม.6 SMT</span>
+                <span class="metric-value" id="metricM6Count">0</span>
+                <span class="metric-desc">คน</span>
             </div>
         </div>
 
@@ -76,7 +81,7 @@
                 </div>
             </div>
 
-            <!-- 2. กราฟวงกลมแสดงสัดส่วนระดับชั้นเรียน ม.1 - ม.6 -->
+            <!-- 2. กราฟวงกลมแสดงสัดส่วนระดับชั้นเรียน -->
             <div class="chart-card">
                 <h3 class="chart-title">🍕 สัดส่วนผู้ลงทะเบียนแยกตามระดับชั้น</h3>
                 <div class="chart-container">
@@ -103,9 +108,6 @@
             <div class="filter-group">
                 <select id="filterClass" class="filter-select" onchange="handleTableSearchAndFilter()">
                     <option value="">-- กรองระดับชั้นทั้งหมด --</option>
-                    <option value="ม.1">มัธยมศึกษาปีที่ 1</option>
-                    <option value="ม.2">มัธยมศึกษาปีที่ 2</option>
-                    <option value="ม.3">มัธยมศึกษาปีที่ 3</option>
                     <option value="ม.4">มัธยมศึกษาปีที่ 4</option>
                     <option value="ม.5">มัธยมศึกษาปีที่ 5</option>
                     <option value="ม.6">มัธยมศึกษาปีที่ 6</option>
