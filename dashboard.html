@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แดชบอร์ดสรุปผลสำหรับครู - สัปดาห์วิทยาศาสตร์ มข. 2569</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Chart.js CDN for interactive charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <!-- Password Gate (ระบบป้องกันหน้าควบคุมสำหรับคุณครู) -->
+    <div id="passwordGate" class="password-gate-backdrop">
+        <div class="password-gate-card">
+            <div class="password-gate-icon">🔒</div>
+            <h2 class="password-gate-title">แดชบอร์ดสำหรับคุณครู</h2>
+            <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:15px;">กรุณากรอกรหัสผ่านเพื่อเข้าสู่ระบบสรุปผลข้อมูล</p>
+            <input type="password" id="adminPasscode" placeholder="••••" maxlength="4">
+            <div id="passcodeError" class="password-gate-error">รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง!</div>
+            <button class="btn btn-primary" style="width:100%;" onclick="validatePasscode()">เข้าสู่แดชบอร์ด</button>
+            <p style="color:var(--text-muted); font-size:0.8rem; margin-top:15px;">*สำหรับทดสอบ รหัสผ่านคือ <strong>1234</strong></p>
+        </div>
+    </div>
+
+    <!-- Main Dashboard Container (ซ่อนอยู่จนกว่าจะเข้ารหัสถูก) -->
+    <div class="container" id="dashboardContent" style="display:none;">
+        
+        <!-- Status Banner -->
+        <div id="connectionStatus" class="status-banner local-demo">
+            <span class="status-dot"></span>
+            <span id="statusText">กำลังเช็คการเชื่อมต่อ...</span>
+        </div>
+
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <div>
+                <h1 class="hero-title" style="font-size: 1.8rem;">แดชบอร์ดสรุปผลการตอบแบบสำรวจความสนใจ</h1>
+                <p style="color: var(--text-muted); font-size: 0.95rem;">
+                    สรุปผลและรายงานสถิตินักเรียนที่สนใจเข้าร่วมแข่งขัน สัปดาห์วิทยาศาสตร์ มข. 2569
+                </p>
+            </div>
+            <div style="display:flex; gap:10px;">
+                <a href="index.html" class="btn btn-secondary" style="padding:10px 18px; font-size:0.9rem;">
+                    ← ไปหน้าฟอร์มกรอกข้อมูล
+                </a>
+            </div>
+        </div>
+
+        <!-- Summary Metric Cards -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <span class="metric-label">จำนวนนักเรียนที่ตอบแบบสำรวจทั้งหมด</span>
+                <span class="metric-value" id="metricTotalStudents">0</span>
+                <span class="metric-desc">คน (กรอกแบบสำรวจรายบุคคล)</span>
+            </div>
+            <div class="metric-card">
+                <span class="metric-label">จำนวนนักเรียน ม.ต้น</span>
+                <span class="metric-value" id="metricJuniorEnrollments">0</span>
+                <span class="metric-desc">คน (ระดับชั้น ม.1 - ม.3)</span>
+            </div>
+            <div class="metric-card">
+                <span class="metric-label">จำนวนนักเรียน ม.ปลาย</span>
+                <span class="metric-value" id="metricSeniorEnrollments">0</span>
+                <span class="metric-desc">คน (ระดับชั้น ม.4 - ม.6)</span>
+            </div>
+        </div>
+
+        <!-- Charts Dashboard Section -->
+        <div class="charts-grid">
+            <!-- 1. กราฟสถิติจำนวนสมัครในแต่ละกิจกรรม 10 รายการ -->
+            <div class="chart-card chart-card-large chart-card-full-width">
+                <h3 class="chart-title">📊 สรุปจำนวนนักเรียนที่สนใจในแต่ละกิจกรรม (10 รายการ)</h3>
+                <div class="chart-container" style="height: 280px;">
+                    <canvas id="activitiesBarChart"></canvas>
+                </div>
+            </div>
+
+            <!-- 2. กราฟวงกลมแสดงสัดส่วนระดับชั้นเรียน ม.1 - ม.6 -->
+            <div class="chart-card">
+                <h3 class="chart-title">🍕 สัดส่วนผู้ลงทะเบียนแยกตามระดับชั้น</h3>
+                <div class="chart-container">
+                    <canvas id="gradesDoughnutChart"></canvas>
+                </div>
+            </div>
+
+            <!-- 3. กราฟวงกลมแสดงสัดส่วนสาขาโครงงานวิทยาศาสตร์ ม.ปลาย -->
+            <div class="chart-card">
+                <h3 class="chart-title">🔬 สาขาโครงงานวิทยาศาสตร์ ม.ปลาย ที่เลือก</h3>
+                <div class="chart-container">
+                    <canvas id="branchesDoughnutChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- System controls, Admin panel & Export -->
+        <div class="controls-panel">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="tableSearch" placeholder="ค้นหาด้วยชื่อ หรือ รหัสประจำตัว..." oninput="handleTableSearchAndFilter()">
+            </div>
+
+            <div class="filter-group">
+                <select id="filterClass" class="filter-select" onchange="handleTableSearchAndFilter()">
+                    <option value="">-- กรองระดับชั้นทั้งหมด --</option>
+                    <option value="ม.1">มัธยมศึกษาปีที่ 1</option>
+                    <option value="ม.2">มัธยมศึกษาปีที่ 2</option>
+                    <option value="ม.3">มัธยมศึกษาปีที่ 3</option>
+                    <option value="ม.4">มัธยมศึกษาปีที่ 4</option>
+                    <option value="ม.5">มัธยมศึกษาปีที่ 5</option>
+                    <option value="ม.6">มัธยมศึกษาปีที่ 6</option>
+                </select>
+
+                <select id="filterActivity" class="filter-select" onchange="handleTableSearchAndFilter()">
+                    <option value="">-- กรองด้วยกิจกรรมทั้งหมด --</option>
+                    <option value="1">1. ประกวดโครงงานวิทยาศาสตร์</option>
+                    <option value="2">2. แข่งตอบปัญหาทางวิทยาศาสตร์</option>
+                    <option value="3">3. แข่งกระบวนการแก้ปัญหาทางวิทย์</option>
+                    <option value="4">4. แข่งกระบวนการแก้ปัญหาทางคณิต</option>
+                    <option value="5">5. แข่งวาดภาพจินตนาการทางวิทย์</option>
+                    <option value="6">6. การสื่อสารทางวิทยาศาสตร์</option>
+                    <option value="7">7. การประกวด Science Show</option>
+                    <option value="8">8. แข่งขันจรวดขวดน้ำ</option>
+                    <option value="9">9. แข่งขันเครื่องบินกระดาษพับ</option>
+                    <option value="10">10. ประกวดสิ่งประดิษฐ์จากของเสีย</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Admin Control Buttons -->
+        <div class="admin-actions">
+            <button class="btn-admin export" onclick="exportDataToCSV()">
+                📥 ส่งออกข้อมูลทั้งหมด (Excel CSV)
+            </button>
+            <button class="btn-admin mock" onclick="generateMockData()">
+                🧪 จำลองข้อมูลผู้ลงสมัครตัวอย่าง (20 คน)
+            </button>
+            <button class="btn-admin clear" onclick="clearAllSurveyData()">
+                🗑️ ล้างข้อมูลทั้งหมดในระบบ
+            </button>
+        </div>
+
+        <!-- Data List Table -->
+        <div class="table-card">
+            <div class="table-responsive">
+                <table id="surveyTable">
+                    <thead>
+                        <tr>
+                            <th>ลำดับ</th>
+                            <th>รหัสประจำตัว</th>
+                            <th>ชื่อ - นามสกุล</th>
+                            <th>ชั้น/ห้อง (เลขที่)</th>
+                            <th>รายการประกวดแข่งขันที่เลือก</th>
+                            <th style="width: 80px; text-align: center;">จัดการ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="surveyTableBody">
+                        <!-- รายการข้อมูลแสดงที่นี่ด้วย JS -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="noDataContainer" class="no-data" style="display: none;">
+                <div class="no-data-icon">🗏</div>
+                <p>ยังไม่มีข้อมูลผู้สมัครลงทะเบียนในขณะนี้</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Load scripts in order -->
+    <script src="config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="dashboard.js"></script>
+
+</body>
+</html>

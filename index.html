@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แบบสำรวจความสนใจประกวดแข่งขัน - สัปดาห์วิทยาศาสตร์ มข. 2569</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <!-- Status Banner -->
+        <div id="connectionStatus" class="status-banner local-demo">
+            <span class="status-dot"></span>
+            <span id="statusText">กำลังเช็คการเชื่อมต่อ...</span>
+        </div>
+
+        <!-- Hero Header -->
+        <header class="hero-card">
+            <div class="hero-banner-container">
+                <img src="images/banner.png" alt="KKU Science Week 2569" class="hero-banner-img">
+                <div class="hero-banner-overlay"></div>
+            </div>
+            <div class="hero-content">
+                <span class="hero-tag">Science Week 2569</span>
+                <h1 class="hero-title">แบบสำรวจความสนใจเข้าร่วมการประกวดและการแข่งขัน</h1>
+                <p class="hero-subtitle">
+                    งานสัปดาห์วิทยาศาสตร์แห่งชาติ ประจำปี 2569 ณ คณะวิทยาศาสตร์ มหาวิทยาลัยขอนแก่น
+                    <br>ระหว่างวันที่ 17 - 19 สิงหาคม 2569
+                </p>
+                <div class="hero-meta">
+                    <div class="hero-meta-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        <span>คณะวิทยาศาสตร์ มข.</span>
+                    </div>
+                    <div class="hero-meta-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        <span>17-19 สิงหาคม 2569</span>
+                    </div>
+                    <div class="hero-meta-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        <span>สำหรับนักเรียน ม.ต้น - ม.ปลาย</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Form -->
+        <main>
+            <form id="surveyForm" onsubmit="handleFormSubmit(event)">
+                
+                <!-- Section 1: ข้อมูลนักเรียน -->
+                <section class="form-section">
+                    <h2 class="section-title">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        1. ข้อมูลประจำตัวนักเรียน
+                    </h2>
+                    
+                    <div class="input-grid">
+                        <div class="form-group input-col-2">
+                            <label for="studentName">ชื่อ - นามสกุล *</label>
+                            <input type="text" id="studentName" placeholder="เด็กชาย/เด็กหญิง/นาย/นางสาว สมชาย ใจดี" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="studentId">รหัสประจำตัวนักเรียน (5 หลัก) *</label>
+                            <input type="text" id="studentId" placeholder="เช่น 12345" pattern="[0-9]{5}" maxlength="5" title="กรุณากรอกตัวเลข 5 หลัก" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="classLevel">ระดับชั้น *</label>
+                            <select id="classLevel" required onchange="filterActivitiesByGrade()">
+                                <option value="" disabled selected>-- เลือกชั้นเรียน --</option>
+                                <option value="ม.1">มัธยมศึกษาปีที่ 1</option>
+                                <option value="ม.2">มัธยมศึกษาปีที่ 2</option>
+                                <option value="ม.3">มัธยมศึกษาปีที่ 3</option>
+                                <option value="ม.4">มัธยมศึกษาปีที่ 4</option>
+                                <option value="ม.5">มัธยมศึกษาปีที่ 5</option>
+                                <option value="ม.6">มัธยมศึกษาปีที่ 6</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="classRoom">ห้องเรียน *</label>
+                            <input type="text" id="classRoom" placeholder="เช่น 1 หรือ 4/2" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="classNo">เลขที่ *</label>
+                            <input type="number" id="classNo" placeholder="เช่น 15" min="1" max="100" required>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section 2: รายการกิจกรรมที่สนใจ -->
+                <section class="form-section">
+                    <h2 class="section-title">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        2. เลือกรายการแข่งขัน/ประกวดที่สนใจ (เลือกได้มากกว่า 1 รายการ)
+                    </h2>
+                    
+                    <div class="activity-grid">
+                        
+                        <!-- กิจกรรมที่ 1 -->
+                        <div class="activity-card" data-grade="high" id="activity_1" onclick="selectActivityCard(1)">
+                            <div class="activity-image-wrapper">
+                                <img src="images/science.png" class="activity-img" alt="โครงงานวิทยาศาสตร์ ม.ปลาย">
+                                <div class="activity-badges">
+                                    <span class="badge senior">ม.ปลาย</span>
+                                </div>
+                            </div>
+                            <div class="activity-info">
+                                <h3 class="activity-title">1. การประกวดโครงงานวิทยาศาสตร์ ระดับ ม.ปลาย</h3>
+                                <p class="activity-desc">การประกวดโครงงานทางวิทยาศาสตร์ แบ่งออกเป็น 3 สาขา ได้แก่ สาขากายภาพ, สาขาชีวภาพ และสาขาวิทยาศาสตร์ประยุกต์</p>
+                                <div class="activity-links">
+                                    <span class="rule-link" onclick="event.stopPropagation(); downloadWordTemplate()">
+                                        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                                        ดาวน์โหลดเอกสารรูปแบบข้อเสนอโครงงาน (.doc)
+                                    </span>
+                                </div>
+                                <div class="sub-settings" id="projectSubSettings" onclick="event.stopPropagation()">
+                                    <label for="projectBranch">เลือกสาขาโครงงานที่สนใจสมัคร *</label>
+                                    <select id="projectBranch">
+                                        <option value="" disabled selected>-- เลือกสาขาโครงงาน --</option>
+                                        <option value="สาขากายภาพ">สาขากายภาพ (ฟิสิกส์, เคมี, ดาราศาสตร์, โลกและอวกาศ)</option>
+                                        <option value="สาขาชีวภาพ">สาขาชีวภาพ (ชีววิทยา, พฤกษศาสตร์, สัตววิทยา)</option>
+                                        <option value="สาขาวิทยาศาสตร์ประยุกต์">สาขาวิทยาศาสตร์ประยุกต์ (วิศวกรรม, คอมพิวเตอร์, สิ่งแวดล้อม)</option>
+                                    </select>
+                                </div>
+                                <div class="card-control">
+                                    <span class="selection-status">ไม่ได้เลือก</span>
+                                    <label class="switch" onclick="event.stopPropagation()">
+                                        <input type="radio" name="activitySelection" id="check_activity_1" onchange="toggleActivitySelection(1)">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- กิจกรรมที่ 2 -->
+                        <div class="activity-card" data-grade="high" id="activity_2" onclick="selectActivityCard(2)">
+                            <div class="activity-image-wrapper">
+                                <img src="images/science.png" class="activity-img" alt="ตอบปัญหาทางวิทยาศาสตร์ ม.ปลาย">
+                                <div class="activity-badges">
+                                    <span class="badge senior">ม.ปลาย</span>
+                                </div>
+                            </div>
+                            <div class="activity-info">
+                                <h3 class="activity-title">2. การแข่งขันตอบปัญหาทางวิทยาศาสตร์ ระดับ ม.ปลาย</h3>
+                                <p class="activity-desc">ทดสอบความรู้ทั่วไปทางวิทยาศาสตร์ เคมี ฟิสิกส์ ชีววิทยา และวิทยาศาสตร์โลกและอวกาศ</p>
+                                <div class="activity-links">
+                                    <a href="https://sc.kku.ac.th/scweek/competition/rules/2569/2569_10.pdf" target="_blank" class="rule-link" onclick="event.stopPropagation()">
+                                        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4 6h-4v2h4v2h-4v2h4v2H9V7h6v2z"/></svg>
+                                        อ่านรายละเอียดกติกา (PDF)
+                                    </a>
+                                </div>
+                                <div class="card-control">
+                                    <span class="selection-status">ไม่ได้เลือก</span>
+                                    <label class="switch" onclick="event.stopPropagation()">
+                                        <input type="radio" name="activitySelection" id="check_activity_2" onchange="toggleActivitySelection(2)">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- กิจกรรมที่ 3 -->
+                        <div class="activity-card" data-grade="high" id="activity_3" onclick="selectActivityCard(3)">
+                            <div class="activity-image-wrapper">
+                                <img src="images/science.png" class="activity-img" alt="แก้ปัญหาทางวิทยาศาสตร์ ม.ปลาย">
+                                <div class="activity-badges">
+                                    <span class="badge senior">ม.ปลาย</span>
+                                </div>
+                            </div>
+                            <div class="activity-info">
+                                <h3 class="activity-title">3. การแข่งขันแก้ปัญหาทางวิทยาศาสตร์ ระดับ ม.ปลาย</h3>
+                                <p class="activity-desc">แข่งขันการวิเคราะห์ ปฏิบัติการทดลองจริง และกระบวนการหาคำตอบตามระเบียบวิธีทางวิทยาศาสตร์</p>
+                                <div class="activity-links">
+                                    <a href="https://sc.kku.ac.th/scweek/competition/rules/2569/2569_1.pdf" target="_blank" class="rule-link" onclick="event.stopPropagation()">
+                                        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4 6h-4v2h4v2h-4v2h4v2H9V7h6v2z"/></svg>
+                                        อ่านรายละเอียดกติกา (PDF)
+                                    </a>
+                                </div>
+                                <div class="card-control">
+                                    <span class="selection-status">ไม่ได้เลือก</span>
+                                    <label class="switch" onclick="event.stopPropagation()">
+                                        <input type="radio" name="activitySelection" id="check_activity_3" onchange="toggleActivitySelection(3)">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- กิจกรรมที่ 4 -->
+                        <div class="activity-card" data-grade="high" id="activity_4" onclick="selectActivityCard(4)">
+                            <div class="activity-image-wrapper">
+                                <img src="images/math.png" class="activity-img" alt="แก้ปัญหาคณิตศาสตร์ ม.ปลาย">
+                                <div class="activity-badges">
+                                    <span class="badge senior">ม.ปลาย</span>
+                                </div>
+                            </div>
+                            <div class="activity-info">
+                                <h3 class="activity-title">4. การแข่งขันแก้ปัญหาคณิตศาสตร์ ระดับ ม.ปลาย</h3>
+                                <p class="activity-desc">ท้าทายความสามารถทางคณิตศาสตร์ระดับสูง การคิดวิเคราะห์เชิงตรรกะ และการแก้ปัญหาโจทย์ประยุกต์</p>
+                                <div class="activity-links">
+                                    <a href="https://sc.kku.ac.th/scweek/competition/rules/2569/2569_17.pdf" target="_blank" class="rule-link" onclick="event.stopPropagation()">
+                                        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4 6h-4v2h4v2h-4v2h4v2H9V7h6v2z"/></svg>
+                                        อ่านรายละเอียดกติกา (PDF)
+                                    </a>
+                                </div>
+                                <div class="card-control">
+                                    <span class="selection-status">ไม่ได้เลือก</span>
+                                    <label class="switch" onclick="event.stopPropagation()">
+                                        <input type="radio" name="activitySelection" id="check_activity_4" onchange="toggleActivitySelection(4)">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- กิจกรรมที่ 5 -->
+                        <div class="activity-card" data-grade="high" id="activity_5" onclick="selectActivityCard(5)">
+                            <div class="activity-image-wrapper">
+                                <img src="images/creative.png" class="activity-img" alt="วาดภาพจินตนาการวิทยาศาสตร์ ม.ปลาย">
+                                <div class="activity-badges">
+                                    <span class="badge senior">ม.ปลาย</span>
+                                </div>
+                            </div>
+                            <div class="activity-info">
+                                <h3 class="activity-title">5. การแข่งขันวาดภาพจินตนาการทางวิทยาศาสตร์ ระดับ ม.ปลาย</h3>
+                                <p class="activity-desc">ถ่ายทอดไอเดียทางวิทยาศาสตร์ในอนาคตผ่านการรังสรรค์ภาพศิลปะตามเกณฑ์ที่กำหนด</p>
+                                <div class="activity-links">
+                                    <a href="https://sc.kku.ac.th/scweek/competition/rules/2569/2569_3.pdf" target="_blank" class="rule-link" onclick="event.stopPropagation()">
+                                        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4 6h-4v2h4v2h-4v2h4v2H9V7h6v2z"/></svg>
+                                        อ่านรายละเอียดกติกา (PDF)
+                                    </a>
+                                </div>
+                                <div class="card-control">
+                                    <span class="selection-status">ไม่ได้เลือก</span>
+                                    <label class="switch" onclick="event.stopPropagation()">
+                                        <input type="radio" name="activitySelection" id="check_activity_5" onchange="toggleActivitySelection(5)">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- กิจกรรมที่ 6 -->
+                        <div class="activity-card" data-grade="both" id="activity_6" onclick="selectActivityCard(6)">
+                            <div class="activity-image-wrapper">
+                                <img src="images/creative.png" class="activity-img" alt="การสื่อสารทางวิทยาศาสตร์">
+                                <div class="activity-badges">
+                                    <span class="badge both">ม.ต้น & ม.ปลาย</span>
+                                </div>
+                            </div>
+                            <div class="activity-info">
+                                <h3 class="activity-title">6. การแข่งขันการสื่อสารทางวิทยาศาสตร์ (Science Communication)</h3>
+                                <p class="activity-desc">แข่งขันนำเสนอเรื่องราววิทยาศาสตร์ที่ซับซ้อนให้เข้าใจง่ายและน่าสนใจในเวลาจำกัด</p>
+                                <div class="activity-links">
+                                    <a href="https://storage.sc.kku.ac.th/s/okdCp8wHHWYWaA8" target="_blank" class="rule-link" onclick="event.stopPropagation()">
+                                        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4 6h-4v2h4v2h-4v2h4v2H9V7h6v2z"/></svg>
+                                        ลิงก์รายละเอียดกติกา 1
+                                    </a>
+                                    <a href="https://storage.sc.kku.ac.th/s/GSzLwks2S8tXas9" target="_blank" class="rule-link" onclick="event.stopPropagation()">
+                                        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4 6h-4v2h4v2h-4v2h4v2H9V7h6v2z"/></svg>
+                                        ลิงก์รายละเอียดกติกา 2
+                                    </a>
+                                </div>
+                                <div class="card-control">
+                                    <span class="selection-status">ไม่ได้เลือก</span>
+                                    <label class="switch" onclick="event.stopPropagation()">
+                                        <input type="radio" name="activitySelection" id="check_activity_6" onchange="toggleActivitySelection(6)">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- กิจกรรมที่ 7 -->
+                        <div class="activity-card" data-grade="junior" id="activity_7" onclick="selectActivityCard(7)">
+                            <div class="activity-image-wrapper">
+                                <img src="images/science.png" class="activity-img" alt="Science Show ม.ต้น">
+                                <div class="activity-badges">
+                                    <span class="badge junior">ม.ต้น</span>
+                                </div>
+                            </div>
+                            <div class="activity-info">
+                                <h3 class="activity-title">7. การประกวดการแสดงทางวิทยาศาสตร์ (Science Show)</h3>
+                                <p class="activity-desc">ประกวดการแสดงที่น่าตื่นเต้น อธิบายหลักการทางฟิสิกส์/เคมีได้อย่างสนุกสนานและปลอดภัย (สำหรับ ม.ต้น)</p>
+                                <div class="activity-links">
+                                    <a href="https://sc.kku.ac.th/scweek/competition/rules/2569/2569_2.pdf" target="_blank" class="rule-link" onclick="event.stopPropagation()">
+                                        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4 6h-4v2h4v2h-4v2h4v2H9V7h6v2z"/></svg>
+                                        อ่านรายละเอียดกติกา (PDF)
+                                    </a>
+                                </div>
+                                <div class="card-control">
+                                    <span class="selection-status">ไม่ได้เลือก</span>
+                                    <label class="switch" onclick="event.stopPropagation()">
+                                        <input type="radio" name="activitySelection" id="check_activity_7" onchange="toggleActivitySelection(7)">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- กิจกรรมที่ 8 -->
+                        <div class="activity-card" data-grade="both" id="activity_8" onclick="selectActivityCard(8)">
+                            <div class="activity-image-wrapper">
+                                <img src="images/aerospace.png" class="activity-img" alt="จรวดขวดน้ำ">
+                                <div class="activity-badges">
+                                    <span class="badge both">ม.ต้น & ม.ปลาย</span>
+                                </div>
+                            </div>
+                            <div class="activity-info">
+                                <h3 class="activity-title">8. การแข่งขันจรวดขวดน้ำ</h3>
+                                <p class="activity-desc">ประดิษฐ์และแข่งขันจรวดขวดน้ำ ทั้งประเภทความไกลและประเภทความแม่นยำ</p>
+                                <div class="activity-links">
+                                    <span class="rule-link" style="cursor:default; text-decoration:none; color:var(--text-muted);">
+                                        (ติดต่อกติกาที่กลุ่มสาระวิทยาศาสตร์)
+                                    </span>
+                                </div>
+                                <div class="card-control">
+                                    <span class="selection-status">ไม่ได้เลือก</span>
+                                    <label class="switch" onclick="event.stopPropagation()">
+                                        <input type="radio" name="activitySelection" id="check_activity_8" onchange="toggleActivitySelection(8)">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- กิจกรรมที่ 9 -->
+                        <div class="activity-card" data-grade="both" id="activity_9" onclick="selectActivityCard(9)">
+                            <div class="activity-image-wrapper">
+                                <img src="images/aerospace.png" class="activity-img" alt="เครื่องบินกระดาษพับ">
+                                <div class="activity-badges">
+                                    <span class="badge both">ม.ต้น & ม.ปลาย</span>
+                                    <span class="badge special">สมัคร ณ สนามแข่งขัน</span>
+                                </div>
+                            </div>
+                            <div class="activity-info">
+                                <h3 class="activity-title">9. การแข่งขันเครื่องบินกระดาษพับ</h3>
+                                <p class="activity-desc">พับกระดาษและร่อนทำสถิติร่อนนาน/ร่อนไกล (หมายเหตุ: รับสมัคร ณ สนามแข่งขันจริง)</p>
+                                <div class="activity-links">
+                                    <span class="rule-link" style="cursor:default; text-decoration:none; color:var(--text-muted);">
+                                        *สมัครโดยตรง ณ จุดแข่งขันในวันงาน
+                                    </span>
+                                </div>
+                                <div class="card-control">
+                                    <span class="selection-status">ไม่ได้เลือก</span>
+                                    <label class="switch" onclick="event.stopPropagation()">
+                                        <input type="radio" name="activitySelection" id="check_activity_9" onchange="toggleActivitySelection(9)">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- กิจกรรมที่ 10 -->
+                        <div class="activity-card" data-grade="both" id="activity_10" onclick="selectActivityCard(10)">
+                            <div class="activity-image-wrapper">
+                                <img src="images/creative.png" class="activity-img" alt="สิ่งประดิษฐ์จากของเหลือทิ้ง">
+                                <div class="activity-badges">
+                                    <span class="badge both">ม.ต้น & ม.ปลาย</span>
+                                </div>
+                            </div>
+                            <div class="activity-info">
+                                <h3 class="activity-title">10. การประกวดสิ่งประดิษฐ์จากของเหลือทิ้ง</h3>
+                                <p class="activity-desc">ประกวดไอเดียรักษ์โลก ประดิษฐ์สิ่งของเครื่องใช้จากวัสดุเหลือใช้ให้เกิดประโยชน์และสร้างมูลค่า</p>
+                                <div class="activity-links">
+                                    <a href="https://sc.kku.ac.th/scweek/competition/rules/2569/2569_20.pdf" target="_blank" class="rule-link" onclick="event.stopPropagation()">
+                                        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4 6h-4v2h4v2-4v2h4v2H9V7h6v2z"/></svg>
+                                        อ่านรายละเอียดกติกา (PDF)
+                                    </a>
+                                </div>
+                                <div class="card-control">
+                                    <span class="selection-status">ไม่ได้เลือก</span>
+                                    <label class="switch" onclick="event.stopPropagation()">
+                                        <input type="radio" name="activitySelection" id="check_activity_10" onchange="toggleActivitySelection(10)">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- Actions Button -->
+                <div class="submit-area">
+                    <p class="form-instructions">* ตรวจสอบข้อมูล รหัสประจำตัว และรายการแข่งขันที่สนใจให้ถูกต้องก่อนทำการบันทึก</p>
+                    <div class="form-buttons">
+                        <button type="button" class="btn btn-secondary" onclick="resetForm()">ล้างข้อมูล</button>
+                        <button type="submit" class="btn btn-primary">
+                            ส่งแบบสำรวจ
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+            </form>
+
+            <!-- Success Card (แสดงหลังบันทึกเสร็จ) -->
+            <div id="successCard" class="success-card">
+                <div class="success-icon-wrapper">✓</div>
+                <h2 class="success-title">ส่งข้อมูลแบบสำรวจสำเร็จ!</h2>
+                <p class="success-text">บันทึกข้อมูลความสนใจในการเข้าร่วมแข่งขันสัปดาห์วิทยาศาสตร์ มข. 2569 เรียบร้อยแล้ว</p>
+                
+                <div class="success-details">
+                    <h4>ข้อมูลการลงทะเบียนของคุณ</h4>
+                    <p>ชื่อ-นามสกุล: <span id="summaryName"></span></p>
+                    <p>ระดับชั้น: <span id="summaryClass"></span></p>
+                    <p>รหัสนักเรียน: <span id="summaryId"></span></p>
+                    <p>กิจกรรมที่สนใจ: <span id="summaryCount">0 รายการ</span></p>
+                </div>
+
+                <div style="display:flex; justify-content:center; gap: 15px;">
+                    <button class="btn btn-secondary" onclick="backToForm()">ลงทะเบียนคนถัดไป</button>
+                    <a href="dashboard.html" class="btn btn-primary" style="text-decoration:none;">ดูหน้า Dashboard ครู</a>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Load scripts in order -->
+    <script src="config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="app.js"></script>
+
+</body>
+</html>
