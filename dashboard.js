@@ -717,3 +717,163 @@ function showToast(title, message, type = "info") {
         }, 300);
     }, 4000);
 }
+
+/**
+ * 12. พิมพ์รายงานสรุปภาพรวมผู้ลงทะเบียน (Infographic)
+ */
+function openInfographicModal() {
+    renderInfographic();
+    document.getElementById("infographicModal").style.display = "flex";
+}
+
+function closeInfographicModal() {
+    document.getElementById("infographicModal").style.display = "none";
+}
+
+function renderInfographic() {
+    // ใช้ข้อมูลจากรายการที่กรองอยู่บนหน้าแดชบอร์ดขณะนั้น เพื่อความยืดหยุ่นในการใช้งาน
+    const dataList = filteredSurveys;
+
+    // อัปเดตยอดสะสมแยกตามห้องเรียนในส่วนหัวการ์ด
+    const totalCount = dataList.length;
+    const m4Count = dataList.filter(s => s.class_level === "ม.4").length;
+    const m5Count = dataList.filter(s => s.class_level === "ม.5").length;
+    const m6Count = dataList.filter(s => s.class_level === "ม.6").length;
+
+    document.getElementById("infoMetricTotal").innerText = totalCount;
+    document.getElementById("infoMetricM4").innerText = m4Count;
+    document.getElementById("infoMetricM5").innerText = m5Count;
+    document.getElementById("infoMetricM6").innerText = m6Count;
+    document.getElementById("infographicTime").innerText = new Date().toLocaleString('th-TH');
+
+    const container = document.getElementById("infographicGroupedContainer");
+    container.innerHTML = "";
+
+    if (totalCount === 0) {
+        container.innerHTML = `
+            <div style="text-align:center; padding: 50px 20px; color:#64748b;">
+                <div style="font-size:2.5rem; margin-bottom:15px;">🗏</div>
+                <p style="font-size: 0.95rem;">ไม่พบข้อมูลนักเรียนตามตัวกรองที่เลือกในขณะนี้</p>
+            </div>
+        `;
+        return;
+    }
+
+    // จัดกลุ่มข้อมูลตาม ID กิจกรรมหลัก
+    const grouped = {};
+    dataList.forEach(student => {
+        if (student.interests && student.interests.length > 0) {
+            const act = student.interests[0];
+            if (!grouped[act.id]) {
+                grouped[act.id] = {
+                    id: act.id,
+                    name: act.name,
+                    students: []
+                };
+            }
+            grouped[act.id].students.push({
+                name: student.student_name,
+                id: student.student_id,
+                class: `${student.class_level}/${student.class_room}`,
+                no: student.class_no,
+                branch: act.branch
+            });
+        }
+    });
+
+    // แสดงผลเฉพาะกิจกรรมที่มีเด็กเลือกเท่านั้น เพื่อให้อินโฟกราฟิกกระชับและไม่รกตา
+    const sortedKeys = Object.keys(grouped).sort((a, b) => Number(a) - Number(b));
+
+    sortedKeys.forEach(key => {
+        const item = grouped[key];
+        const studentCount = item.students.length;
+        
+        let studentsHtml = "";
+        item.students.forEach(s => {
+            const branchTag = s.branch ? `<span style="font-size:0.75rem; color:#f97316; background:rgba(249,115,22,0.12); padding:1px 5px; border-radius:3px; font-weight:500; margin-left:4px;">${s.branch}</span>` : "";
+            studentsHtml += `
+                <div style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.07); border-radius: 6px; padding: 6px 12px; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px; color:#f1f5f9;">
+                    <span style="color:#818cf8; font-family:var(--font-en); font-weight:600;">#${s.no}</span> 
+                    <strong>${s.name}</strong> 
+                    <span style="color:#94a3b8; font-size:0.75rem;">(ม.${s.class.split('/')[0].replace('ม.','')} SMT)</span>
+                    ${branchTag}
+                </div>
+            `;
+        });
+
+        const sectionHtml = `
+            <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 18px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); width:100%; box-sizing:border-box;">
+                <div style="display: flex; justify-content: space-between; align-items:center; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 8px;">
+                    <span style="font-weight: 600; color: #a5b4fc; font-size:0.95rem; display:flex; align-items:center; gap:8px;">
+                        <span style="display:inline-block; width:6px; height:6px; background:var(--accent); border-radius:50%;"></span>
+                        ${item.name}
+                    </span>
+                    <span style="background: rgba(79, 70, 229, 0.15); border:1px solid rgba(79,70,229,0.25); color: #c7d2fe; font-size: 0.75rem; padding: 3px 10px; border-radius: 20px; font-weight: 600; font-family:var(--font-en);">
+                        ${studentCount} คน
+                    </span>
+                </div>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    ${studentsHtml}
+                </div>
+            </div>
+        `;
+        container.innerHTML += sectionHtml;
+    });
+}
+
+async function downloadInfographicImage() {
+    const reportElement = document.getElementById("infographicReport");
+    
+    showToast("กำลังประมวลผลภาพ", "ระบบกำลังสร้างรูปภาพ PNG ความละเอียดสูง...", "info");
+
+    try {
+        // โคลนอิลิเมนต์เพื่อนำไปเรนเดอร์ในพื้นที่พิเศษที่ไม่มีข้อจำกัดด้านความสูงและสกอร์บาร์
+        const clone = reportElement.cloneNode(true);
+        
+        // สไตล์ตัวโคลนให้อยู่นอกหน้าจอและแสดงความกว้าง/ความสูงเต็มพิกัด (กว้าง 700px ตามสัดส่วนเดิม)
+        clone.style.position = "absolute";
+        clone.style.left = "-9999px";
+        clone.style.top = "0";
+        clone.style.width = "700px";
+        clone.style.height = "auto";
+        clone.style.maxHeight = "none";
+        clone.style.overflow = "visible";
+        clone.style.boxSizing = "border-box";
+        
+        document.body.appendChild(clone);
+
+        // รอเคลียร์ค่าสไตล์และฟอนต์ชั่วครู่
+        await new Promise(resolve => setTimeout(resolve, 200));
+
+        // รัน html2canvas บนตัวโคลนที่อยู่นอกสายตา เพื่อให้ได้ความสูงเต็มจริง 100% ไม่ถูกบีบด้วยจอภาพหรือสกอร์บาร์
+        const canvas = await html2canvas(clone, {
+            scale: 2.5,
+            useCORS: true,
+            backgroundColor: "#020617",
+            logging: false,
+            width: 700,
+            height: clone.scrollHeight,
+            windowWidth: 700,
+            windowHeight: clone.scrollHeight
+        });
+
+        // ลบตัวโคลนออกจาก DOM หลังใช้งานเสร็จ
+        document.body.removeChild(clone);
+
+        // แปลงแคนวาสเป็น URL รูปภาพ PNG
+        const image = canvas.toDataURL("image/png");
+        
+        // ดาวน์โหลดไฟล์ภาพ PNG เข้าสู่เครื่องผู้ใช้
+        const a = document.createElement("a");
+        a.href = image;
+        a.download = `KKU_ScienceWeek2569_Infographic_${new Date().toISOString().slice(0,10)}.png`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        showToast("บันทึกสำเร็จ", "ดาวน์โหลดภาพรายงานสรุป PNG สำเร็จ!", "success");
+    } catch (error) {
+        console.error("Export Image Error:", error);
+        showToast("ส่งออกล้มเหลว", "ไม่สามารถส่งออกภาพได้: " + error.message, "error");
+    }
+}
