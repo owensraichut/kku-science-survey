@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แบบลงทะเบียนและประเมินความพึงพอใจ - บูธแม่ไก่ใส่ใจลูกเจี๊ยบ รร.อุเทนพัฒนา</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="booth.css">
+</head>
+<body>
+
+    <div class="container">
+        <!-- Status Banner -->
+        <div id="connectionStatus" class="status-banner local-demo">
+            <span class="status-dot"></span>
+            <span id="statusText">กำลังเช็คการเชื่อมต่อ...</span>
+        </div>
+
+        <!-- Hero Header -->
+        <header class="booth-hero">
+            <span class="booth-hero-emoji">🐔🐣</span>
+            <span class="booth-hero-tag">From Human Capital to Life Capital</span>
+            <h1 class="booth-hero-title">แบบลงทะเบียนและประเมินความพึงพอใจ<br>ผู้เข้าเยี่ยมชมบูธ “แม่ไก่ใส่ใจลูกเจี๊ยบ”</h1>
+            <p class="booth-hero-subtitle">
+                นำเสนอหลักสูตร <strong>“ศุกร์หรรษา พาน้องหนีเรียน”</strong>
+                — เรียนในห้อง 4 วัน แล้ววันศุกร์ออกไปลองทำอาชีพจริงในสถานประกอบการ
+                <br>โดยโรงเรียนอุเทนพัฒนา สำนักงานเขตพื้นที่การศึกษามัธยมศึกษานครพนม (สพม.นครพนม)
+                <br>ความคิดเห็นของท่านจะถูกนำไปใช้พัฒนาหลักสูตรและการจัดนิทรรศการในครั้งต่อไป
+            </p>
+            <div class="booth-hero-meta">
+                <span>🏫 โรงเรียนอุเทนพัฒนา</span>
+                <span>📍 สพม.นครพนม</span>
+                <span>🗓️ เรียน 4 วัน + ทำอาชีพจริงวันศุกร์</span>
+                <span>⏱️ ใช้เวลาประมาณ 3 นาที</span>
+            </div>
+        </header>
+
+        <!-- Stepper -->
+        <div class="booth-steps no-print" id="boothSteps">
+            <div class="booth-step active" id="step1"><span class="booth-step-num">1</span> ลงทะเบียน</div>
+            <span class="booth-step-arrow">→</span>
+            <div class="booth-step" id="step2"><span class="booth-step-num">2</span> ความสนใจในหลักสูตร</div>
+            <span class="booth-step-arrow">→</span>
+            <div class="booth-step" id="step3"><span class="booth-step-num">3</span> ประเมินความพึงพอใจ</div>
+            <span class="booth-step-arrow">→</span>
+            <div class="booth-step" id="step4"><span class="booth-step-num">4</span> ข้อเสนอแนะ</div>
+        </div>
+
+        <main>
+            <form id="boothForm" onsubmit="handleBoothSubmit(event)">
+
+                <!-- แถบความคืบหน้า -->
+                <div class="progress-wrap no-print">
+                    <span class="progress-text">ความคืบหน้า</span>
+                    <div class="progress-bar"><div class="progress-bar-fill" id="progressFill"></div></div>
+                    <span class="progress-text" id="progressText">0 / 15 ข้อ</span>
+                </div>
+
+                <!-- ================= ตอนที่ 1: ลงทะเบียนผู้เข้าเยี่ยมชม ================= -->
+                <section class="form-section" id="sectionRegister">
+                    <h2 class="section-title">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        ตอนที่ 1 ข้อมูลผู้เข้าเยี่ยมชม (แบบลงทะเบียน)
+                    </h2>
+
+                    <div class="input-grid">
+                        <div class="form-group input-col-2">
+                            <label for="visitorName">ชื่อ - นามสกุล *</label>
+                            <input type="text" id="visitorName" placeholder="เช่น นายสมชาย ใจดี" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="visitorGender">เพศ *</label>
+                            <select id="visitorGender" required>
+                                <option value="" disabled selected>-- เลือกเพศ --</option>
+                                <option value="ชาย">ชาย</option>
+                                <option value="หญิง">หญิง</option>
+                                <option value="ไม่ระบุ">ไม่ประสงค์ระบุ</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="visitorType">สถานะผู้เข้าเยี่ยมชม *</label>
+                            <select id="visitorType" required onchange="toggleEduLevel()">
+                                <option value="" disabled selected>-- เลือกสถานะ --</option>
+                                <!-- เติมด้วย JavaScript จาก booth-questions.js -->
+                            </select>
+                        </div>
+                        <div class="form-group" id="eduLevelGroup" style="display:none;">
+                            <label for="eduLevel">ระดับการศึกษา *</label>
+                            <select id="eduLevel">
+                                <option value="" disabled selected>-- เลือกระดับการศึกษา --</option>
+                                <!-- เติมด้วย JavaScript -->
+                            </select>
+                        </div>
+                        <div class="form-group input-col-2">
+                            <label for="organization">โรงเรียนเดิม / หน่วยงานที่สังกัด *</label>
+                            <input type="text" id="organization" placeholder="เช่น โรงเรียนอุเทนพัฒนา" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="province">จังหวัด *</label>
+                            <select id="province" required>
+                                <option value="" disabled selected>-- เลือกจังหวัด --</option>
+                                <!-- เติมด้วย JavaScript จาก booth-questions.js -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="visitRound">ช่วงเวลาที่เข้าเยี่ยมชม *</label>
+                            <select id="visitRound" required>
+                                <option value="" disabled selected>-- เลือกช่วงเวลา --</option>
+                                <!-- เติมด้วย JavaScript -->
+                            </select>
+                        </div>
+                        <div class="form-group input-col-2">
+                            <label for="contact">เบอร์โทรศัพท์ หรือ อีเมล (ไม่บังคับ)</label>
+                            <input type="text" id="contact" placeholder="สำหรับติดต่อกลับกรณีมีของรางวัล/ข้อมูลเพิ่มเติม">
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 18px;">
+                        <label>ท่านทราบข่าวการจัดบูธนี้จากช่องทางใด (เลือกได้มากกว่า 1 ข้อ)</label>
+                        <div class="chip-group" id="referralGroup">
+                            <!-- เติมด้วย JavaScript -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ================= ตอนที่ 2: ความสนใจในหลักสูตร ================= -->
+                <section class="form-section" id="sectionInterest">
+                    <h2 class="section-title">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                        ตอนที่ 2 ความสนใจในหลักสูตร “ศุกร์หรรษา พาน้องหนีเรียน”
+                    </h2>
+
+                    <div class="highlight-box">
+                        <strong>เรียนในห้อง 4 วัน แล้ววันศุกร์ออกไปลองทำอาชีพจริง</strong>
+                        <span>โดยมีครูที่ปรึกษา (แม่ไก่) คอยดูแลผู้เรียนอย่างใกล้ชิด
+                        เพื่อให้นักเรียนได้ค้นพบความถนัดและเส้นทางอาชีพของตนเองจากการลงมือทำจริง</span>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 22px;">
+                        <label>1. ท่านสนใจประเด็นใดในหลักสูตรนี้มากที่สุด (เลือกได้มากกว่า 1 ข้อ) *</label>
+                        <div class="chip-group" id="interestGroup">
+                            <!-- เติมด้วย JavaScript -->
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 22px;">
+                        <label for="careerInterest">2. หากท่านได้ร่วมกิจกรรมนี้ ท่านอยากออกไปลองทำอาชีพหรือสายงานใด</label>
+                        <textarea id="careerInterest" rows="2" placeholder="เช่น เชฟ / ช่างยนต์ / พยาบาล / เกษตรกรรุ่นใหม่ / ครีเอเตอร์ (ตอบได้มากกว่า 1 อาชีพ)"></textarea>
+                    </div>
+
+                    <!-- คำถามสำหรับครูและบุคลากรทางการศึกษา (แสดงอัตโนมัติตามสถานะที่เลือกในตอนที่ 1) -->
+                    <div id="educatorQuestions" style="display:none;">
+                        <div class="form-group" style="margin-bottom: 22px;">
+                            <label for="adoptionInterest">3. โรงเรียนหรือหน่วยงานของท่านสนใจนำรูปแบบนี้ไปปรับใช้หรือไม่</label>
+                            <select id="adoptionInterest">
+                                <option value="" disabled selected>-- เลือกระดับความสนใจ --</option>
+                                <!-- เติมด้วย JavaScript -->
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="adoptionConcern">4. หากนำไปปรับใช้ ท่านคิดว่าจะพบข้อกังวลหรืออุปสรรคใดบ้าง</label>
+                            <textarea id="adoptionConcern" rows="2" placeholder="เช่น การหาสถานประกอบการที่รับนักเรียน / การจัดตารางเรียน / ความปลอดภัยในการเดินทาง / งบประมาณ"></textarea>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ================= ตอนที่ 3: แบบประเมินความพึงพอใจ ================= -->
+                <section class="form-section" id="sectionRating">
+                    <h2 class="section-title">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        ตอนที่ 3 ระดับความพึงพอใจในการเยี่ยมชมบูธ
+                    </h2>
+
+                    <p class="form-instructions" style="text-align:left; margin-bottom: 14px;">
+                        โปรดเลือกช่องที่ตรงกับระดับความพึงพอใจของท่านมากที่สุด (จำเป็นต้องตอบทุกข้อ)
+                    </p>
+
+                    <div class="rating-legend">
+                        <div class="rating-legend-item"><span class="rating-legend-score">5</span> มากที่สุด</div>
+                        <div class="rating-legend-item"><span class="rating-legend-score">4</span> มาก</div>
+                        <div class="rating-legend-item"><span class="rating-legend-score">3</span> ปานกลาง</div>
+                        <div class="rating-legend-item"><span class="rating-legend-score">2</span> น้อย</div>
+                        <div class="rating-legend-item"><span class="rating-legend-score">1</span> น้อยที่สุด</div>
+                    </div>
+
+                    <div id="ratingContainer">
+                        <!-- เติมข้อคำถามทั้ง 15 ข้อด้วย JavaScript จาก booth-questions.js -->
+                    </div>
+                </section>
+
+                <!-- ================= ตอนที่ 4: ข้อเสนอแนะ ================= -->
+                <section class="form-section" id="sectionFeedback">
+                    <h2 class="section-title">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        ตอนที่ 4 ความพึงพอใจในภาพรวมและข้อเสนอแนะ
+                    </h2>
+
+                    <div class="form-group" style="margin-bottom: 22px;">
+                        <label style="text-align:center; display:block;">ความพึงพอใจในภาพรวมต่อบูธ “แม่ไก่ใส่ใจลูกเจี๊ยบ” *</label>
+                        <div class="star-rating" id="starRating">
+                            <button type="button" onclick="setOverallRating(1)" aria-label="1 ดาว">⭐</button>
+                            <button type="button" onclick="setOverallRating(2)" aria-label="2 ดาว">⭐</button>
+                            <button type="button" onclick="setOverallRating(3)" aria-label="3 ดาว">⭐</button>
+                            <button type="button" onclick="setOverallRating(4)" aria-label="4 ดาว">⭐</button>
+                            <button type="button" onclick="setOverallRating(5)" aria-label="5 ดาว">⭐</button>
+                        </div>
+                        <div class="star-caption" id="starCaption">ยังไม่ได้ให้คะแนน</div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 18px;">
+                        <label for="impressed">สิ่งที่ท่านประทับใจมากที่สุดในบูธนี้</label>
+                        <textarea id="impressed" rows="3" placeholder="เช่น แนวคิดพาน้องออกไปทำอาชีพจริง / การเล่าประสบการณ์ของน้อง ๆ เจ้าของบูธ"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="suggestion">ข้อเสนอแนะเพื่อการปรับปรุงและพัฒนา</label>
+                        <textarea id="suggestion" rows="3" placeholder="ข้อเสนอแนะของท่านมีประโยชน์อย่างยิ่งต่อการพัฒนากิจกรรมครั้งต่อไป"></textarea>
+                    </div>
+                </section>
+
+                <!-- ปุ่มส่งข้อมูล -->
+                <div class="submit-area">
+                    <p class="form-instructions">* กรุณาเลือกประเด็นที่สนใจในหลักสูตรอย่างน้อย 1 ข้อ ตอบแบบประเมินให้ครบทั้ง 15 ข้อ และให้คะแนนภาพรวม ก่อนกดบันทึก</p>
+                    <div class="form-buttons">
+                        <button type="button" class="btn btn-secondary" onclick="resetBoothForm()">ล้างข้อมูล</button>
+                        <button type="submit" class="btn btn-primary">
+                            ส่งแบบประเมิน
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+            </form>
+
+            <!-- Success Card (แสดงหลังบันทึกเสร็จ) -->
+            <div id="boothSuccessCard" class="success-card">
+                <div class="success-icon-wrapper">✓</div>
+                <h2 class="success-title">ขอบคุณสำหรับการเยี่ยมชมบูธ!</h2>
+                <p class="success-text">
+                    ระบบได้บันทึกแบบลงทะเบียนและแบบประเมินความพึงพอใจของท่านเรียบร้อยแล้ว
+                    <br>ทีมงานบูธ “แม่ไก่ใส่ใจลูกเจี๊ยบ” ขอขอบพระคุณเป็นอย่างสูง 🐣
+                </p>
+
+                <div class="competitor-stats-box">
+                    <span class="fire-icon">🐥</span>
+                    <span>ขณะนี้มีผู้เข้าเยี่ยมชมบูธและร่วมประเมินแล้วทั้งหมด
+                        <strong id="visitorCount" style="color: var(--accent-light); font-size: 1.25rem;">0</strong> คน (รวมท่านด้วย)
+                    </span>
+                </div>
+
+                <!-- สรุปคะแนนของผู้ตอบรายนี้ -->
+                <div class="score-summary-grid">
+                    <div class="score-summary-box">
+                        <span class="score-summary-label">ค่าเฉลี่ยที่ท่านให้</span>
+                        <span class="score-summary-value" id="myAvgScore">0.00</span>
+                        <span class="score-summary-desc" id="myAvgLevel">-</span>
+                    </div>
+                    <div class="score-summary-box">
+                        <span class="score-summary-label">คะแนนภาพรวม</span>
+                        <span class="score-summary-value" id="myOverallScore">0</span>
+                        <span class="score-summary-desc">จาก 5 ดาว</span>
+                    </div>
+                    <div class="score-summary-box">
+                        <span class="score-summary-label">ค่าเฉลี่ยรวมทุกคน</span>
+                        <span class="score-summary-value" id="boothAvgScore">0.00</span>
+                        <span class="score-summary-desc" id="boothAvgLevel">-</span>
+                    </div>
+                </div>
+
+                <!-- บัตรผู้เข้าเยี่ยมชม (พิมพ์ได้) -->
+                <div class="ticket-card" id="printableVisitTicket">
+                    <div class="ticket-header">
+                        <div class="ticket-header-title">แม่ไก่ใส่ใจลูกเจี๊ยบ 🐔🐣</div>
+                        <div class="ticket-header-subtitle">ศุกร์หรรษา พาน้องหนีเรียน | โรงเรียนอุเทนพัฒนา สพม.นครพนม</div>
+                    </div>
+                    <div class="ticket-body">
+                        <div class="ticket-row">
+                            <span class="ticket-label">เลขที่ผู้เยี่ยมชม (Visitor ID)</span>
+                            <span class="ticket-value" id="ticketVisitId">VST-000</span>
+                        </div>
+                        <div class="ticket-row">
+                            <span class="ticket-label">ชื่อ - นามสกุล</span>
+                            <span class="ticket-value" id="ticketVisitorName">-</span>
+                        </div>
+                        <div class="ticket-row">
+                            <span class="ticket-label">สถานะ</span>
+                            <span class="ticket-value" id="ticketVisitorType">-</span>
+                        </div>
+                        <div class="ticket-row">
+                            <span class="ticket-label">โรงเรียน / หน่วยงาน</span>
+                            <span class="ticket-value" id="ticketOrganization">-</span>
+                        </div>
+                        <div class="ticket-row">
+                            <span class="ticket-label">ช่วงเวลาที่เข้าชม</span>
+                            <span class="ticket-value" id="ticketVisitRound">-</span>
+                        </div>
+                        <div class="ticket-row">
+                            <span class="ticket-label">ระดับความพึงพอใจ</span>
+                            <span class="ticket-value" id="ticketSatisfaction" style="color: var(--accent-light); font-weight: 700;">-</span>
+                        </div>
+                    </div>
+                    <div class="ticket-footer">
+                        <div class="ticket-time">ประเมินเมื่อ: <span id="ticketVisitTime">-</span></div>
+                        <div class="barcode">
+                            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ticket-actions no-print" style="display:flex; justify-content:center; gap: 15px; margin-top: 25px; flex-wrap: wrap;">
+                    <button class="btn btn-secondary" onclick="backToBoothForm()">ประเมินคนถัดไป</button>
+                    <button class="btn btn-primary" onclick="window.print()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:5px;"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                        พิมพ์ / เซฟบัตรนี้
+                    </button>
+                </div>
+            </div>
+
+            <!-- ลิงก์ไปหน้าสรุปผล -->
+            <div class="no-print" style="margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 25px; text-align:center;">
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">
+                    สำหรับคุณครูและทีมงานประจำบูธ — ดูสรุปผลค่าเฉลี่ย ส่วนเบี่ยงเบนมาตรฐาน และดาวน์โหลดข้อมูล
+                </p>
+                <a href="booth-dashboard.html" class="btn btn-secondary" style="padding:10px 20px; font-size:0.9rem;">
+                    📊 ไปยังแดชบอร์ดสรุปผลการประเมินบูธ
+                </a>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Load scripts in order -->
+    <script src="booth-config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="booth-questions.js"></script>
+    <script src="booth.js"></script>
+
+</body>
+</html>
