@@ -20,9 +20,9 @@ function initBoothDatabase() {
     const statusBanner = document.getElementById("connectionStatus");
     const statusText = document.getElementById("statusText");
 
-    if (typeof isSupabaseConfigured === "function" && isSupabaseConfigured()) {
+    if (typeof isBoothSupabaseConfigured === "function" && isBoothSupabaseConfigured()) {
         try {
-            boothSupabase = supabase.createClient(SUPABASE_CONFIG.URL, SUPABASE_CONFIG.ANON_KEY);
+            boothSupabase = supabase.createClient(BOOTH_SUPABASE_CONFIG.URL, BOOTH_SUPABASE_CONFIG.ANON_KEY);
             statusBanner.className = "status-banner supabase-active";
             statusText.innerText = "เชื่อมต่อระบบฐานข้อมูล Supabase สำเร็จ (พร้อมรับข้อมูลจริง)";
         } catch (error) {

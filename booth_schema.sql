@@ -3,6 +3,10 @@
 -- บูธ "แม่ไก่ใส่ใจลูกเจี๊ยบ" โรงเรียนอุเทนพัฒนา สพม.นครพนม
 -- --------------------------------------------------------------------
 -- วิธีใช้: เปิด Supabase Dashboard > SQL Editor > วางสคริปต์นี้ > Run
+--
+-- สถานะ: รันแล้วในโปรเจกต์ physics-utp (vhbbgjbojlifelncyide)
+-- ซึ่งเป็นโปรเจกต์ที่ booth-config.js ชี้ไปอยู่ในขณะนี้
+-- เก็บไฟล์นี้ไว้เพื่อใช้ย้ายไปโปรเจกต์อื่นหรือสร้างใหม่ในภายหลัง
 -- ====================================================================
 
 create table if not exists public.booth_visits (
@@ -59,7 +63,9 @@ create policy "booth_visits_public_select"
 -- --------------------------------------------------------------------
 -- (ทางเลือก) มุมมองสรุปค่าเฉลี่ยรายด้าน สำหรับนำไปทำรายงานใน Supabase โดยตรง
 -- --------------------------------------------------------------------
-create or replace view public.booth_visits_summary as
+-- ใช้ security_invoker เพื่อให้มุมมองนี้ทำงานด้วยสิทธิ์ของผู้เรียก (ผ่าน RLS ตามปกติ)
+create or replace view public.booth_visits_summary
+with (security_invoker = true) as
 select
     count(*)                                   as total_visitors,
     round(avg(avg_score), 2)                   as overall_mean,
