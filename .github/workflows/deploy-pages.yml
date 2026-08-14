@@ -1,0 +1,47 @@
+# ====================================================================
+# นำเว็บไซต์ขึ้น GitHub Pages อัตโนมัติทุกครั้งที่มีการอัปเดตแบรนช์ main
+# --------------------------------------------------------------------
+# เว็บนี้เป็น static ทั้งหมด จึงอัปโหลดไฟล์ทั้งโฟลเดอร์ขึ้น Pages ได้เลย
+# ขั้นตอน configure-pages จะเปิดใช้งาน GitHub Pages ให้เองหากยังไม่เคยเปิด
+# ====================================================================
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# ให้ deploy ทีละครั้ง และไม่ยกเลิกงานที่กำลังทำอยู่
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure Pages
+        # enablement: true = เปิดใช้งาน GitHub Pages ให้อัตโนมัติหากยังไม่ได้เปิด
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Upload site files
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
