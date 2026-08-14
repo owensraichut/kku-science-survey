@@ -19,28 +19,31 @@
         <!-- Hero Header -->
         <header class="booth-hero">
             <span class="booth-hero-emoji">🐔🐣</span>
-            <span class="booth-hero-tag">Booth Visitor Registration &amp; Satisfaction</span>
-            <h1 class="booth-hero-title">แบบลงทะเบียนและประเมินความพึงพอใจ<br>ในการเยี่ยมชมบูธ “แม่ไก่ใส่ใจลูกเจี๊ยบ”</h1>
+            <span class="booth-hero-tag">From Human Capital to Life Capital</span>
+            <h1 class="booth-hero-title">แบบลงทะเบียนและประเมินความพึงพอใจ<br>ผู้เข้าเยี่ยมชมบูธ “แม่ไก่ใส่ใจลูกเจี๊ยบ”</h1>
             <p class="booth-hero-subtitle">
-                นิทรรศการวิทยาศาสตร์ว่าด้วยการดูแลลูกเจี๊ยบและการเลี้ยงไก่อย่างใส่ใจ
-                โดยนักเรียนโรงเรียนอุเทนพัฒนา สำนักงานเขตพื้นที่การศึกษามัธยมศึกษานครพนม (สพม.นครพนม)
-                <br>ความคิดเห็นของท่านจะถูกนำไปใช้เพื่อพัฒนาการจัดกิจกรรมในครั้งต่อไป
+                นำเสนอหลักสูตร <strong>“ศุกร์หรรษา พาน้องหนีเรียน”</strong>
+                — เรียนในห้อง 4 วัน แล้ววันศุกร์ออกไปลองทำอาชีพจริงในสถานประกอบการ
+                <br>โดยโรงเรียนอุเทนพัฒนา สำนักงานเขตพื้นที่การศึกษามัธยมศึกษานครพนม (สพม.นครพนม)
+                <br>ความคิดเห็นของท่านจะถูกนำไปใช้พัฒนาหลักสูตรและการจัดนิทรรศการในครั้งต่อไป
             </p>
             <div class="booth-hero-meta">
                 <span>🏫 โรงเรียนอุเทนพัฒนา</span>
                 <span>📍 สพม.นครพนม</span>
-                <span>⏱️ ใช้เวลาประมาณ 2 - 3 นาที</span>
-                <span>🔒 ข้อมูลใช้เพื่อการประเมินผลเท่านั้น</span>
+                <span>🗓️ เรียน 4 วัน + ทำอาชีพจริงวันศุกร์</span>
+                <span>⏱️ ใช้เวลาประมาณ 3 นาที</span>
             </div>
         </header>
 
         <!-- Stepper -->
         <div class="booth-steps no-print" id="boothSteps">
-            <div class="booth-step active" id="step1"><span class="booth-step-num">1</span> ลงทะเบียนผู้เยี่ยมชม</div>
+            <div class="booth-step active" id="step1"><span class="booth-step-num">1</span> ลงทะเบียน</div>
             <span class="booth-step-arrow">→</span>
-            <div class="booth-step" id="step2"><span class="booth-step-num">2</span> ประเมินความพึงพอใจ</div>
+            <div class="booth-step" id="step2"><span class="booth-step-num">2</span> ความสนใจในหลักสูตร</div>
             <span class="booth-step-arrow">→</span>
-            <div class="booth-step" id="step3"><span class="booth-step-num">3</span> ข้อเสนอแนะ</div>
+            <div class="booth-step" id="step3"><span class="booth-step-num">3</span> ประเมินความพึงพอใจ</div>
+            <span class="booth-step-arrow">→</span>
+            <div class="booth-step" id="step4"><span class="booth-step-num">4</span> ข้อเสนอแนะ</div>
         </div>
 
         <main>
@@ -89,12 +92,15 @@
                             </select>
                         </div>
                         <div class="form-group input-col-2">
-                            <label for="organization">โรงเรียน / หน่วยงาน / สังกัด *</label>
+                            <label for="organization">โรงเรียนเดิม / หน่วยงานที่สังกัด *</label>
                             <input type="text" id="organization" placeholder="เช่น โรงเรียนอุเทนพัฒนา" required>
                         </div>
                         <div class="form-group">
                             <label for="province">จังหวัด *</label>
-                            <input type="text" id="province" placeholder="เช่น นครพนม" value="นครพนม" required>
+                            <select id="province" required>
+                                <option value="" disabled selected>-- เลือกจังหวัด --</option>
+                                <!-- เติมด้วย JavaScript จาก booth-questions.js -->
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="visitRound">ช่วงเวลาที่เข้าเยี่ยมชม *</label>
@@ -117,11 +123,53 @@
                     </div>
                 </section>
 
-                <!-- ================= ตอนที่ 2: แบบประเมินความพึงพอใจ ================= -->
+                <!-- ================= ตอนที่ 2: ความสนใจในหลักสูตร ================= -->
+                <section class="form-section" id="sectionInterest">
+                    <h2 class="section-title">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                        ตอนที่ 2 ความสนใจในหลักสูตร “ศุกร์หรรษา พาน้องหนีเรียน”
+                    </h2>
+
+                    <div class="highlight-box">
+                        <strong>เรียนในห้อง 4 วัน แล้ววันศุกร์ออกไปลองทำอาชีพจริง</strong>
+                        <span>โดยมีครูที่ปรึกษา (แม่ไก่) คอยดูแลผู้เรียนอย่างใกล้ชิด
+                        เพื่อให้นักเรียนได้ค้นพบความถนัดและเส้นทางอาชีพของตนเองจากการลงมือทำจริง</span>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 22px;">
+                        <label>1. ท่านสนใจประเด็นใดในหลักสูตรนี้มากที่สุด (เลือกได้มากกว่า 1 ข้อ) *</label>
+                        <div class="chip-group" id="interestGroup">
+                            <!-- เติมด้วย JavaScript -->
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 22px;">
+                        <label for="careerInterest">2. หากท่านได้ร่วมกิจกรรมนี้ ท่านอยากออกไปลองทำอาชีพหรือสายงานใด</label>
+                        <textarea id="careerInterest" rows="2" placeholder="เช่น เชฟ / ช่างยนต์ / พยาบาล / เกษตรกรรุ่นใหม่ / ครีเอเตอร์ (ตอบได้มากกว่า 1 อาชีพ)"></textarea>
+                    </div>
+
+                    <!-- คำถามสำหรับครูและบุคลากรทางการศึกษา (แสดงอัตโนมัติตามสถานะที่เลือกในตอนที่ 1) -->
+                    <div id="educatorQuestions" style="display:none;">
+                        <div class="form-group" style="margin-bottom: 22px;">
+                            <label for="adoptionInterest">3. โรงเรียนหรือหน่วยงานของท่านสนใจนำรูปแบบนี้ไปปรับใช้หรือไม่</label>
+                            <select id="adoptionInterest">
+                                <option value="" disabled selected>-- เลือกระดับความสนใจ --</option>
+                                <!-- เติมด้วย JavaScript -->
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="adoptionConcern">4. หากนำไปปรับใช้ ท่านคิดว่าจะพบข้อกังวลหรืออุปสรรคใดบ้าง</label>
+                            <textarea id="adoptionConcern" rows="2" placeholder="เช่น การหาสถานประกอบการที่รับนักเรียน / การจัดตารางเรียน / ความปลอดภัยในการเดินทาง / งบประมาณ"></textarea>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ================= ตอนที่ 3: แบบประเมินความพึงพอใจ ================= -->
                 <section class="form-section" id="sectionRating">
                     <h2 class="section-title">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                        ตอนที่ 2 ระดับความพึงพอใจในการเยี่ยมชมบูธ
+                        ตอนที่ 3 ระดับความพึงพอใจในการเยี่ยมชมบูธ
                     </h2>
 
                     <p class="form-instructions" style="text-align:left; margin-bottom: 14px;">
@@ -141,11 +189,11 @@
                     </div>
                 </section>
 
-                <!-- ================= ตอนที่ 3: ข้อเสนอแนะ ================= -->
+                <!-- ================= ตอนที่ 4: ข้อเสนอแนะ ================= -->
                 <section class="form-section" id="sectionFeedback">
                     <h2 class="section-title">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                        ตอนที่ 3 ความพึงพอใจในภาพรวมและข้อเสนอแนะ
+                        ตอนที่ 4 ความพึงพอใจในภาพรวมและข้อเสนอแนะ
                     </h2>
 
                     <div class="form-group" style="margin-bottom: 22px;">
@@ -162,7 +210,7 @@
 
                     <div class="form-group" style="margin-bottom: 18px;">
                         <label for="impressed">สิ่งที่ท่านประทับใจมากที่สุดในบูธนี้</label>
-                        <textarea id="impressed" rows="3" placeholder="เช่น กิจกรรมให้ทดลองฟักไข่ / การอธิบายของน้อง ๆ เจ้าของบูธ"></textarea>
+                        <textarea id="impressed" rows="3" placeholder="เช่น แนวคิดพาน้องออกไปทำอาชีพจริง / การเล่าประสบการณ์ของน้อง ๆ เจ้าของบูธ"></textarea>
                     </div>
 
                     <div class="form-group">
@@ -173,7 +221,7 @@
 
                 <!-- ปุ่มส่งข้อมูล -->
                 <div class="submit-area">
-                    <p class="form-instructions">* กรุณาตรวจสอบว่าได้ตอบแบบประเมินครบทั้ง 15 ข้อ และให้คะแนนภาพรวมแล้ว ก่อนกดบันทึก</p>
+                    <p class="form-instructions">* กรุณาเลือกประเด็นที่สนใจในหลักสูตรอย่างน้อย 1 ข้อ ตอบแบบประเมินให้ครบทั้ง 15 ข้อ และให้คะแนนภาพรวม ก่อนกดบันทึก</p>
                     <div class="form-buttons">
                         <button type="button" class="btn btn-secondary" onclick="resetBoothForm()">ล้างข้อมูล</button>
                         <button type="submit" class="btn btn-primary">
@@ -224,7 +272,7 @@
                 <div class="ticket-card" id="printableVisitTicket">
                     <div class="ticket-header">
                         <div class="ticket-header-title">แม่ไก่ใส่ใจลูกเจี๊ยบ 🐔🐣</div>
-                        <div class="ticket-header-subtitle">บัตรผู้เข้าเยี่ยมชมบูธ | โรงเรียนอุเทนพัฒนา สพม.นครพนม</div>
+                        <div class="ticket-header-subtitle">ศุกร์หรรษา พาน้องหนีเรียน | โรงเรียนอุเทนพัฒนา สพม.นครพนม</div>
                     </div>
                     <div class="ticket-body">
                         <div class="ticket-row">

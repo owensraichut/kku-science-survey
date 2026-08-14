@@ -57,6 +57,16 @@ function renderRegisterOptions() {
         roundSelect.insertAdjacentHTML("beforeend", `<option value="${round}">${round}</option>`);
     });
 
+    // จังหวัดทั้ง 77 จังหวัด จัดกลุ่มตามภาคเพื่อให้หาง่าย (ผู้เข้าชมมาจากทั่วประเทศ)
+    const provinceSelect = document.getElementById("province");
+    PROVINCES_BY_REGION.forEach(group => {
+        const options = group.provinces
+            .map(province => `<option value="${province}">${province}</option>`)
+            .join("");
+        provinceSelect.insertAdjacentHTML("beforeend",
+            `<optgroup label="${group.region}">${options}</optgroup>`);
+    });
+
     const referralGroup = document.getElementById("referralGroup");
     REFERRAL_SOURCES.forEach((source, index) => {
         referralGroup.insertAdjacentHTML("beforeend", `
@@ -66,10 +76,28 @@ function renderRegisterOptions() {
             </div>
         `);
     });
+
+    // ประเด็นในหลักสูตรที่สนใจ (ตอนที่ 2)
+    const interestGroup = document.getElementById("interestGroup");
+    INTEREST_POINTS.forEach((point, index) => {
+        interestGroup.insertAdjacentHTML("beforeend", `
+            <div class="chip">
+                <input type="checkbox" id="interest_${index}" value="${point}" onchange="updateProgress()">
+                <label for="interest_${index}">${point}</label>
+            </div>
+        `);
+    });
+
+    const adoptionSelect = document.getElementById("adoptionInterest");
+    ADOPTION_OPTIONS.forEach(option => {
+        adoptionSelect.insertAdjacentHTML("beforeend", `<option value="${option}">${option}</option>`);
+    });
 }
 
 /**
- * 2.1 แสดง/ซ่อนช่องระดับการศึกษา ตามสถานะผู้เข้าเยี่ยมชม
+ * 2.1 แสดง/ซ่อนช่องที่ขึ้นกับสถานะผู้เข้าเยี่ยมชม
+ * - นักเรียน/นักศึกษา -> ถามระดับชั้น
+ * - ครูและบุคลากรทางการศึกษา -> ถามเรื่องการนำหลักสูตรไปปรับใช้
  */
 function toggleEduLevel() {
     const visitorType = document.getElementById("visitorType").value;
@@ -83,6 +111,16 @@ function toggleEduLevel() {
     } else {
         eduSelect.removeAttribute("required");
         eduSelect.value = "";
+    }
+
+    // คำถามสำหรับครูและบุคลากรทางการศึกษา
+    const educatorBlock = document.getElementById("educatorQuestions");
+    const isEducator = EDUCATOR_TYPES.includes(visitorType);
+    educatorBlock.style.display = isEducator ? "block" : "none";
+
+    if (!isEducator) {
+        document.getElementById("adoptionInterest").value = "";
+        document.getElementById("adoptionConcern").value = "";
     }
 }
 
@@ -151,12 +189,25 @@ function updateProgress() {
 
     // อัปเดตแถบขั้นตอนด้านบน
     const step1Done = !!document.getElementById("visitorName").value.trim();
-    const step2Done = answered === total;
-    const step3Done = overallRating > 0;
+    const step2Done = getCheckedValues("#interestGroup").length > 0;
+    const step3Done = answered === total;
+    const step4Done = overallRating > 0;
 
     setStepState("step1", step1Done, !step1Done);
     setStepState("step2", step2Done, step1Done && !step2Done);
     setStepState("step3", step3Done, step2Done && !step3Done);
+    setStepState("step4", step4Done, step3Done && !step4Done);
+}
+
+/**
+ * 3.3 อ่านค่าที่ติ๊กไว้ทั้งหมดในกลุ่มตัวเลือกแบบชิป
+ * @param {string} containerSelector
+ * @returns {string[]}
+ */
+function getCheckedValues(containerSelector) {
+    return Array.from(
+        document.querySelectorAll(`${containerSelector} input[type='checkbox']:checked`)
+    ).map(input => input.value);
 }
 
 function setStepState(id, isDone, isActive) {
@@ -210,9 +261,15 @@ function collectBoothFormData() {
     }
 
     // ช่องทางที่ทราบข่าว (เลือกได้หลายข้อ)
-    const referralSources = Array.from(
-        document.querySelectorAll("#referralGroup input[type='checkbox']:checked")
-    ).map(input => input.value);
+    const referralSources = getCheckedValues("#referralGroup");
+
+    // ตอนที่ 2: ความสนใจในหลักสูตร
+    const interestPoints = getCheckedValues("#interestGroup");
+    if (interestPoints.length === 0) {
+        showBoothToast("ยังไม่ได้เลือกประเด็นที่สนใจ", "กรุณาเลือกประเด็นในหลักสูตรที่ท่านสนใจอย่างน้อย 1 ข้อ", "error");
+        document.getElementById("sectionInterest").scrollIntoView({ behavior: "smooth", block: "start" });
+        return null;
+    }
 
     // คะแนนความพึงพอใจทั้ง 15 ข้อ
     const ratings = {};
@@ -259,6 +316,10 @@ function collectBoothFormData() {
         visit_round: visitRound,
         contact: contact || null,
         referral_sources: referralSources,
+        interest_points: interestPoints,
+        career_interest: document.getElementById("careerInterest").value.trim() || null,
+        adoption_interest: document.getElementById("adoptionInterest").value || null,
+        adoption_concern: document.getElementById("adoptionConcern").value.trim() || null,
         ratings: ratings,
         overall_rating: overallRating,
         avg_score: avgScore === null ? null : Number(avgScore.toFixed(2)),
@@ -413,10 +474,10 @@ function resetBoothForm() {
     document.querySelectorAll("#starRating button").forEach(btn => btn.classList.remove("on"));
     document.getElementById("starCaption").innerText = "ยังไม่ได้ให้คะแนน";
 
-    // ซ่อนช่องระดับการศึกษาและคืนค่าเริ่มต้นของจังหวัด
+    // ซ่อนช่องที่ขึ้นกับสถานะผู้เข้าเยี่ยมชม
     document.getElementById("eduLevelGroup").style.display = "none";
     document.getElementById("eduLevel").removeAttribute("required");
-    document.getElementById("province").value = "นครพนม";
+    document.getElementById("educatorQuestions").style.display = "none";
 
     updateProgress();
 }

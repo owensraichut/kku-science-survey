@@ -335,6 +335,32 @@
 }
 
 /* --------------------------------------------------------------
+   กล่องเน้นแนวคิดหลักของหลักสูตร
+   -------------------------------------------------------------- */
+.highlight-box {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.14) 0%, rgba(79, 70, 229, 0.12) 100%);
+    border: 1px solid rgba(252, 211, 77, 0.3);
+    border-left: 4px solid var(--booth-warm);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    margin-bottom: 22px;
+}
+
+.highlight-box strong {
+    color: var(--booth-warm-light);
+    font-size: 1rem;
+}
+
+.highlight-box span {
+    color: #cbd5e1;
+    font-size: 0.88rem;
+    line-height: 1.6;
+}
+
+/* --------------------------------------------------------------
    ตัวเลือกแบบชิป (Checkbox / Radio pills)
    -------------------------------------------------------------- */
 .chip-group {

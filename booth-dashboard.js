@@ -163,6 +163,16 @@ function renderMetrics() {
     const highCount = averages.filter(v => v >= 3.51).length;
     const percent = averages.length === 0 ? 0 : Math.round((highCount / averages.length) * 100);
     document.getElementById("metricHighPercent").innerText = `${percent}%`;
+
+    // จำนวนบุคลากรทางการศึกษาที่สนใจนำหลักสูตรไปปรับใช้
+    const educators = boothRows.filter(row => EDUCATOR_TYPES.includes(row.visitor_type));
+    const interestedCount = educators.filter(row =>
+        row.adoption_interest && row.adoption_interest.startsWith("สนใจ")
+    ).length;
+
+    document.getElementById("metricAdoption").innerText = interestedCount;
+    document.getElementById("metricAdoptionDesc").innerText =
+        `คน จากบุคลากรทางการศึกษาทั้งหมด ${educators.length} คน`;
 }
 
 /**
@@ -257,7 +267,139 @@ function renderCharts() {
     }
 
     const fontConfig = { family: "Sarabun", size: 11 };
+    const smallFont = { family: "Sarabun", size: 10 };
     const gridColor = "rgba(255, 255, 255, 0.08)";
+
+    // 6.0 ประเด็นในหลักสูตรที่ผู้เข้าชมสนใจ (จุดขายไหนโดนใจที่สุด)
+    const interestCounts = INTEREST_POINTS.map(point =>
+        boothRows.filter(row =>
+            Array.isArray(row.interest_points) && row.interest_points.includes(point)
+        ).length
+    );
+
+    drawChart("interestBarChart", {
+        type: "bar",
+        data: {
+            labels: INTEREST_POINTS,
+            datasets: [{
+                label: "จำนวนผู้สนใจ (คน)",
+                data: interestCounts,
+                backgroundColor: "rgba(245, 158, 11, 0.75)",
+                borderColor: "rgba(255, 255, 255, 0.2)",
+                borderWidth: 1,
+                borderRadius: 4
+            }]
+        },
+        options: {
+            indexAxis: "y",
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: { titleFont: fontConfig, bodyFont: fontConfig }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    ticks: { color: "#94a3b8", font: fontConfig, precision: 0 },
+                    grid: { color: gridColor }
+                },
+                y: {
+                    ticks: {
+                        color: "#94a3b8",
+                        font: smallFont,
+                        // ตัดข้อความยาวให้พออ่านได้ในแกน y
+                        callback: function (value) {
+                            const label = this.getLabelForValue(value);
+                            return label.length > 42 ? label.slice(0, 40) + "…" : label;
+                        }
+                    },
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+
+    // 6.0.1 ความสนใจนำหลักสูตรไปปรับใช้ (เฉพาะบุคลากรทางการศึกษา)
+    const adoptionCounts = ADOPTION_OPTIONS.map(option =>
+        boothRows.filter(row => row.adoption_interest === option).length
+    );
+
+    drawChart("adoptionBarChart", {
+        type: "bar",
+        data: {
+            labels: ADOPTION_OPTIONS.map(option =>
+                option.length > 24 ? option.slice(0, 22) + "…" : option),
+            datasets: [{
+                label: "จำนวน (คน)",
+                data: adoptionCounts,
+                backgroundColor: [
+                    "rgba(16, 185, 129, 0.75)",
+                    "rgba(59, 130, 246, 0.75)",
+                    "rgba(129, 140, 248, 0.75)",
+                    "rgba(245, 158, 11, 0.75)",
+                    "rgba(148, 163, 184, 0.6)"
+                ],
+                borderColor: "rgba(255, 255, 255, 0.2)",
+                borderWidth: 1,
+                borderRadius: 4
+            }]
+        },
+        options: {
+            indexAxis: "y",
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    titleFont: fontConfig,
+                    bodyFont: fontConfig,
+                    callbacks: {
+                        // แสดงข้อความเต็มใน tooltip เพราะแกน y ถูกตัดให้สั้น
+                        title: items => ADOPTION_OPTIONS[items[0].dataIndex]
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    ticks: { color: "#94a3b8", font: fontConfig, precision: 0 },
+                    grid: { color: gridColor }
+                },
+                y: { ticks: { color: "#94a3b8", font: smallFont }, grid: { display: false } }
+            }
+        }
+    });
+
+    // 6.0.2 ผู้เข้าเยี่ยมชมแยกตามภูมิภาค (ผู้ชมมาจากทั่วประเทศ)
+    const regionLabels = PROVINCES_BY_REGION.map(group => group.region);
+    const regionCounts = PROVINCES_BY_REGION.map(group =>
+        boothRows.filter(row => group.provinces.includes(row.province)).length
+    );
+    const hasRegionData = regionCounts.some(count => count > 0);
+
+    drawChart("regionPieChart", {
+        type: "doughnut",
+        data: {
+            labels: hasRegionData ? regionLabels : ["ยังไม่มีข้อมูล"],
+            datasets: [{
+                data: hasRegionData ? regionCounts : [1],
+                backgroundColor: hasRegionData
+                    ? ["#38bdf8", "#4f46e5", "#f59e0b", "#10b981", "#a855f7", "#ef4444"]
+                    : ["rgba(255,255,255,0.05)"],
+                borderWidth: 1,
+                borderColor: "rgba(255, 255, 255, 0.1)"
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: "bottom", labels: { color: "#94a3b8", font: smallFont } },
+                tooltip: { enabled: hasRegionData, titleFont: fontConfig, bodyFont: fontConfig }
+            }
+        }
+    });
 
     // 6.1 ค่าเฉลี่ยรายด้าน
     const groupLabels = RATING_GROUPS.map(g => g.title.replace(/^ด้านที่ \d+ /, ""));
@@ -463,6 +605,8 @@ function drawChart(canvasId, config) {
  * 7. แสดงข้อเสนอแนะปลายเปิด
  */
 function renderComments() {
+    renderCommentList("careerList", "career_interest", "ยังไม่มีผู้ระบุอาชีพที่อยากไปลองทำ");
+    renderCommentList("concernList", "adoption_concern", "ยังไม่มีผู้ระบุข้อกังวลในการนำหลักสูตรไปปรับใช้");
     renderCommentList("impressedList", "impressed", "ยังไม่มีผู้เขียนสิ่งที่ประทับใจ");
     renderCommentList("suggestionList", "suggestion", "ยังไม่มีข้อเสนอแนะเพิ่มเติม");
 }
@@ -480,7 +624,7 @@ function renderCommentList(containerId, field, emptyText) {
         <div class="comment-item">
             <div class="comment-meta">
                 ${escapeHtml(row.visitor_name || "ไม่ระบุชื่อ")} · ${escapeHtml(row.visitor_type || "-")}
-                · ${row.created_at ? new Date(row.created_at).toLocaleDateString("th-TH") : "-"}
+                · ${escapeHtml(row.organization || "-")} จ.${escapeHtml(row.province || "-")}
             </div>
             <div class="comment-text">${escapeHtml(row[field])}</div>
         </div>
@@ -540,8 +684,10 @@ function exportBoothCSV() {
 
     const questionHeaders = ALL_QUESTIONS.map((q, index) => `ข้อ ${index + 1}`);
     const headers = [
-        "ลำดับ", "วันเวลาที่ประเมิน", "ชื่อ-นามสกุล", "เพศ", "สถานะ", "ระดับการศึกษา",
-        "โรงเรียน/หน่วยงาน", "จังหวัด", "ช่วงเวลาที่เข้าชม", "ช่องทางที่ทราบข่าว",
+        "ลำดับ", "วันเวลาที่ประเมิน", "ชื่อ-นามสกุล", "เพศ", "สถานะ", "ระดับชั้น",
+        "โรงเรียนเดิม/หน่วยงาน", "จังหวัด", "ช่วงเวลาที่เข้าชม", "ช่องทางที่ทราบข่าว",
+        "ประเด็นในหลักสูตรที่สนใจ", "อาชีพที่อยากไปลองทำ",
+        "ความสนใจนำไปปรับใช้", "ข้อกังวลหากนำไปปรับใช้",
         ...questionHeaders, "ค่าเฉลี่ยรายบุคคล", "คะแนนภาพรวม (ดาว)", "สิ่งที่ประทับใจ", "ข้อเสนอแนะ"
     ];
 
@@ -562,6 +708,10 @@ function exportBoothCSV() {
             row.province || "",
             row.visit_round || "",
             Array.isArray(row.referral_sources) ? row.referral_sources.join(" / ") : "",
+            Array.isArray(row.interest_points) ? row.interest_points.join(" / ") : "",
+            row.career_interest || "",
+            row.adoption_interest || "",
+            row.adoption_concern || "",
             ...scores,
             avg,
             row.overall_rating || "",
@@ -622,6 +772,26 @@ function exportSummaryCSV() {
         totalSD === null ? "" : totalSD.toFixed(2),
         interpretScore(totalMean).text
     ]);
+
+    // สรุปความสนใจในหลักสูตร (นับความถี่และคิดเป็นร้อยละของผู้ตอบทั้งหมด)
+    table.push([]);
+    table.push(["ประเด็นในหลักสูตรที่ผู้เข้าชมสนใจ", "จำนวน (คน)", "ร้อยละ", ""]);
+    INTEREST_POINTS.forEach(point => {
+        const count = boothRows.filter(row =>
+            Array.isArray(row.interest_points) && row.interest_points.includes(point)
+        ).length;
+        const percent = boothRows.length === 0 ? 0 : (count / boothRows.length) * 100;
+        table.push([point, count, percent.toFixed(1), ""]);
+    });
+
+    const educators = boothRows.filter(row => EDUCATOR_TYPES.includes(row.visitor_type));
+    table.push([]);
+    table.push([`ความสนใจนำหลักสูตรไปปรับใช้ (บุคลากรทางการศึกษา n = ${educators.length})`, "จำนวน (คน)", "ร้อยละ", ""]);
+    ADOPTION_OPTIONS.forEach(option => {
+        const count = boothRows.filter(row => row.adoption_interest === option).length;
+        const percent = educators.length === 0 ? 0 : (count / educators.length) * 100;
+        table.push([option, count, percent.toFixed(1), ""]);
+    });
 
     downloadCSV(table, "ตารางสรุปผลการประเมินบูธแม่ไก่ใส่ใจลูกเจี๊ยบ.csv");
 }

@@ -24,11 +24,17 @@ create table if not exists public.booth_visits (
     visit_round       text,
     referral_sources  jsonb default '[]'::jsonb,
 
-    -- ตอนที่ 2: คะแนนความพึงพอใจ 15 ข้อ เก็บเป็น JSON เช่น {"c1":5,"c2":4,...}
+    -- ตอนที่ 2: ความสนใจในหลักสูตร "ศุกร์หรรษา พาน้องหนีเรียน"
+    interest_points   jsonb default '[]'::jsonb,  -- ประเด็นในหลักสูตรที่สนใจ (เลือกได้หลายข้อ)
+    career_interest   text,                       -- อาชีพ/สายงานที่อยากไปลองทำ (สำหรับนักเรียน)
+    adoption_interest text,                       -- ความสนใจนำไปปรับใช้ (สำหรับบุคลากรทางการศึกษา)
+    adoption_concern  text,                       -- ข้อกังวล/อุปสรรคหากนำไปปรับใช้
+
+    -- ตอนที่ 3: คะแนนความพึงพอใจ 15 ข้อ เก็บเป็น JSON เช่น {"c1":5,"c2":4,...}
     ratings           jsonb not null default '{}'::jsonb,
     avg_score         numeric(3,2),
 
-    -- ตอนที่ 3: ภาพรวมและข้อเสนอแนะ
+    -- ตอนที่ 4: ภาพรวมและข้อเสนอแนะ
     overall_rating    smallint check (overall_rating between 1 and 5),
     impressed         text,
     suggestion        text
