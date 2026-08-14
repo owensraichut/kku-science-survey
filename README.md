@@ -80,13 +80,17 @@
 
 ### การนำขึ้นใช้งานจริง (Deploy)
 
-เว็บนี้เป็น static ทั้งหมด ไม่ต้องใช้เซิร์ฟเวอร์ ใช้ GitHub Pages ได้ฟรี
-1. รวมโค้ดเข้าแบรนช์ `main`
-2. ไปที่ **Settings > Pages** เลือก Source เป็น *Deploy from a branch* > `main` > `/ (root)` แล้วกด Save
-3. รอประมาณ 1 - 2 นาที จะได้ลิงก์
-   - แบบประเมิน: `https://<username>.github.io/kku-science-survey/booth.html`
-   - แดชบอร์ด: `https://<username>.github.io/kku-science-survey/booth-dashboard.html`
-4. นำลิงก์แบบประเมินไปสร้าง QR Code ติดไว้หน้าบูธ
+เว็บนี้เป็น static ทั้งหมด ไม่ต้องใช้เซิร์ฟเวอร์ และเปิดใช้งานบน GitHub Pages แล้ว
+
+- แบบประเมิน (นำไปทำ QR Code ติดหน้าบูธ): <https://owensraichut.github.io/kku-science-survey/booth.html>
+- แดชบอร์ดสรุปผล: <https://owensraichut.github.io/kku-science-survey/booth-dashboard.html>
+
+การ deploy ทำผ่าน GitHub Actions ตามไฟล์ `.github/workflows/deploy-pages.yml`
+ทุกครั้งที่มีการอัปเดตแบรนช์ `main` เว็บจะถูก deploy ใหม่อัตโนมัติภายในไม่กี่นาที
+ดูสถานะได้ที่แท็บ **Actions** ของ repository
+
+> หากต้องการเปลี่ยนกลับไปใช้แบบ *Deploy from a branch* ให้ลบไฟล์ workflow ดังกล่าว
+> แล้วตั้งค่า Source ใหม่ในหน้า **Settings > Pages**
 
 ### การแก้ไขข้อคำถาม
 
