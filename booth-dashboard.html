@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สรุปผลการประเมินบูธแม่ไก่ใส่ใจลูกเจี๊ยบ - รร.อุเทนพัฒนา สพม.นครพนม</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="booth.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <!-- Password Gate -->
+    <div id="passwordGate" class="password-gate-backdrop">
+        <div class="password-gate-card">
+            <div class="password-gate-icon">🐔</div>
+            <h2 class="password-gate-title">สรุปผลการประเมินบูธ</h2>
+            <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:15px;">สำหรับคุณครูและทีมงานประจำบูธ กรุณากรอกรหัสผ่านเพื่อเข้าดูข้อมูล</p>
+            <input type="password" id="adminPasscode" placeholder="••••" maxlength="4">
+            <div id="passcodeError" class="password-gate-error">รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง!</div>
+            <button class="btn btn-primary" style="width:100%;" onclick="validateBoothPasscode()">เข้าสู่ระบบสรุปผล</button>
+            <p style="color:var(--text-muted); font-size:0.8rem; margin-top:15px;">*รหัสผ่านเริ่มต้นคือ <strong>1234</strong> (แก้ไขได้ในไฟล์ booth-dashboard.js)</p>
+        </div>
+    </div>
+
+    <div class="container" id="dashboardContent" style="display:none;">
+
+        <!-- Status Banner -->
+        <div id="connectionStatus" class="status-banner local-demo no-print">
+            <span class="status-dot"></span>
+            <span id="statusText">กำลังเช็คการเชื่อมต่อ...</span>
+        </div>
+
+        <!-- Header -->
+        <div class="dashboard-header">
+            <div>
+                <h1 class="hero-title" style="font-size: 1.7rem;">🐔🐣 สรุปผลการประเมินความพึงพอใจ บูธ “แม่ไก่ใส่ใจลูกเจี๊ยบ”</h1>
+                <p style="color: var(--text-muted); font-size: 0.95rem;">
+                    โรงเรียนอุเทนพัฒนา สำนักงานเขตพื้นที่การศึกษามัธยมศึกษานครพนม (สพม.นครพนม)
+                    <br><span id="reportGeneratedAt"></span>
+                </p>
+            </div>
+            <div class="no-print" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                <a href="booth.html" class="btn btn-secondary" style="padding:10px 18px; font-size:0.9rem;">← กลับไปหน้าแบบประเมิน</a>
+                <button class="btn btn-secondary" style="padding:10px 18px; font-size:0.9rem;" onclick="loadBoothDashboard()">🔄 รีเฟรช</button>
+            </div>
+        </div>
+
+        <!-- Metric Cards -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <span class="metric-label">ผู้เข้าเยี่ยมชมที่ตอบแบบประเมิน</span>
+                <span class="metric-value" id="metricTotal">0</span>
+                <span class="metric-desc">คน</span>
+            </div>
+            <div class="metric-card">
+                <span class="metric-label">ค่าเฉลี่ยความพึงพอใจรวม</span>
+                <span class="metric-value" id="metricAvg">0.00</span>
+                <span class="metric-desc" id="metricAvgLevel">-</span>
+            </div>
+            <div class="metric-card">
+                <span class="metric-label">ส่วนเบี่ยงเบนมาตรฐาน (S.D.)</span>
+                <span class="metric-value" id="metricSD">0.00</span>
+                <span class="metric-desc">ของค่าเฉลี่ยรายบุคคล</span>
+            </div>
+            <div class="metric-card">
+                <span class="metric-label">ผู้ประเมินระดับดีมากขึ้นไป</span>
+                <span class="metric-value" id="metricHighPercent">0%</span>
+                <span class="metric-desc">ค่าเฉลี่ยตั้งแต่ 3.51 ขึ้นไป</span>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="charts-grid">
+            <div class="chart-card chart-card-large chart-card-full-width">
+                <h3 class="chart-title">📊 ค่าเฉลี่ยความพึงพอใจรายด้าน (เต็ม 5 คะแนน)</h3>
+                <div class="chart-container" style="height: 280px;">
+                    <canvas id="groupBarChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <h3 class="chart-title">👥 สัดส่วนผู้เข้าเยี่ยมชมแยกตามสถานะ</h3>
+                <div class="chart-container" style="height: 260px;">
+                    <canvas id="visitorTypePieChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <h3 class="chart-title">⭐ การกระจายคะแนนความพึงพอใจภาพรวม</h3>
+                <div class="chart-container" style="height: 260px;">
+                    <canvas id="overallBarChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <h3 class="chart-title">📣 ช่องทางที่ทราบข่าวการจัดบูธ</h3>
+                <div class="chart-container" style="height: 260px;">
+                    <canvas id="referralBarChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <h3 class="chart-title">⏰ ช่วงเวลาที่เข้าเยี่ยมชม</h3>
+                <div class="chart-container" style="height: 260px;">
+                    <canvas id="roundPieChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- ตารางแปลผลรายข้อ -->
+        <div class="table-card">
+            <div class="dashboard-header" style="margin-bottom: 15px;">
+                <h3 class="chart-title" style="margin:0;">📋 ตารางแสดงค่าเฉลี่ย ส่วนเบี่ยงเบนมาตรฐาน และการแปลผลรายข้อ</h3>
+                <div class="no-print" style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <button class="btn btn-secondary" style="padding:8px 16px; font-size:0.85rem;" onclick="window.print()">🖨️ พิมพ์รายงาน</button>
+                    <button class="btn btn-primary" style="padding:8px 16px; font-size:0.85rem;" onclick="exportBoothCSV()">⬇️ ดาวน์โหลดข้อมูลดิบ (CSV)</button>
+                    <button class="btn btn-primary" style="padding:8px 16px; font-size:0.85rem;" onclick="exportSummaryCSV()">⬇️ ดาวน์โหลดตารางสรุป (CSV)</button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="interpret-table" id="interpretTable">
+                    <thead>
+                        <tr>
+                            <th style="width:55%;">รายการประเมิน</th>
+                            <th style="text-align:center;">ค่าเฉลี่ย (x̄)</th>
+                            <th style="text-align:center;">S.D.</th>
+                            <th style="text-align:center;">แปลผล</th>
+                            <th style="text-align:center;">อันดับ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="interpretTableBody">
+                        <tr><td colspan="5" style="text-align:center; color:var(--text-muted);">กำลังโหลดข้อมูล...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 14px;">
+                เกณฑ์การแปลผล (Best): 4.51 - 5.00 = มากที่สุด | 3.51 - 4.50 = มาก | 2.51 - 3.50 = ปานกลาง | 1.51 - 2.50 = น้อย | 1.00 - 1.50 = น้อยที่สุด
+            </p>
+        </div>
+
+        <!-- ข้อเสนอแนะปลายเปิด -->
+        <div class="charts-grid" style="margin-top: 25px;">
+            <div class="chart-card">
+                <h3 class="chart-title">💚 สิ่งที่ผู้เข้าชมประทับใจ</h3>
+                <div class="comment-list" id="impressedList">
+                    <p style="color:var(--text-muted); font-size:0.9rem;">ยังไม่มีข้อมูล</p>
+                </div>
+            </div>
+            <div class="chart-card">
+                <h3 class="chart-title">🛠️ ข้อเสนอแนะเพื่อการปรับปรุง</h3>
+                <div class="comment-list" id="suggestionList">
+                    <p style="color:var(--text-muted); font-size:0.9rem;">ยังไม่มีข้อมูล</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- รายชื่อผู้เข้าเยี่ยมชม -->
+        <div class="table-card" style="margin-top: 25px;">
+            <div class="dashboard-header" style="margin-bottom: 15px;">
+                <h3 class="chart-title" style="margin:0;">🧾 ทะเบียนผู้เข้าเยี่ยมชมบูธ</h3>
+                <div class="search-box no-print">
+                    <input type="text" id="visitorSearch" class="filter-select" placeholder="ค้นหาชื่อ / โรงเรียน / จังหวัด" oninput="renderVisitorTable()">
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="interpret-table">
+                    <thead>
+                        <tr>
+                            <th style="text-align:center;">ลำดับ</th>
+                            <th>ชื่อ - นามสกุล</th>
+                            <th>สถานะ</th>
+                            <th>โรงเรียน / หน่วยงาน</th>
+                            <th>จังหวัด</th>
+                            <th style="text-align:center;">ค่าเฉลี่ย</th>
+                            <th style="text-align:center;">แปลผล</th>
+                            <th>วันเวลาที่ประเมิน</th>
+                        </tr>
+                    </thead>
+                    <tbody id="visitorTableBody">
+                        <tr><td colspan="8" style="text-align:center; color:var(--text-muted);">กำลังโหลดข้อมูล...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script src="config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="booth-questions.js"></script>
+    <script src="booth-dashboard.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,580 @@
+/* ====================================================================
+   BOOTH VISIT SURVEY STYLES
+   บูธ "แม่ไก่ใส่ใจลูกเจี๊ยบ" โรงเรียนอุเทนพัฒนา สพม.นครพนม
+   ไฟล์นี้ใช้ต่อยอดจาก style.css (ต้องโหลด style.css ก่อนเสมอ)
+   ==================================================================== */
+
+:root {
+    --booth-warm: #f59e0b;        /* สีเหลืองอำพัน (ลูกเจี๊ยบ) */
+    --booth-warm-light: #fcd34d;
+    --booth-warm-dark: #b45309;
+    --booth-nest: #ef7c22;        /* สีส้มอบอุ่น */
+}
+
+/* --------------------------------------------------------------
+   Hero เฉพาะหน้าบูธ (ไม่ใช้รูปแบนเนอร์ แต่ใช้ gradient + emoji)
+   -------------------------------------------------------------- */
+.booth-hero {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.22) 0%, rgba(239, 124, 34, 0.16) 45%, rgba(79, 70, 229, 0.18) 100%);
+    border: 1px solid rgba(252, 211, 77, 0.28);
+    border-radius: var(--radius-lg);
+    padding: 28px 22px;
+    margin-bottom: 25px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+}
+
+.booth-hero::after {
+    content: "";
+    position: absolute;
+    right: -60px;
+    top: -60px;
+    width: 220px;
+    height: 220px;
+    background: radial-gradient(circle, rgba(252, 211, 77, 0.25) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.booth-hero-emoji {
+    font-size: 2.6rem;
+    line-height: 1;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.booth-hero-tag {
+    display: inline-block;
+    background: rgba(245, 158, 11, 0.2);
+    border: 1px solid rgba(252, 211, 77, 0.45);
+    color: var(--booth-warm-light);
+    font-family: var(--font-en);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 999px;
+    margin-bottom: 12px;
+}
+
+.booth-hero-title {
+    font-size: 1.65rem;
+    font-weight: 700;
+    line-height: 1.35;
+    margin-bottom: 8px;
+}
+
+@media (min-width: 768px) {
+    .booth-hero-title { font-size: 2.1rem; }
+    .booth-hero { padding: 38px 34px; }
+}
+
+.booth-hero-subtitle {
+    color: #e2e8f0;
+    font-size: 0.95rem;
+    max-width: 720px;
+    margin-bottom: 18px;
+}
+
+.booth-hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.booth-hero-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(15, 23, 42, 0.45);
+    border: 1px solid var(--card-border);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 0.82rem;
+    color: var(--text-main);
+}
+
+/* --------------------------------------------------------------
+   Textarea (style.css เดิมยังไม่ได้กำหนดสไตล์ของ textarea ไว้)
+   -------------------------------------------------------------- */
+.form-group textarea {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    color: #fff;
+    font-size: 1rem;
+    font-family: var(--font-th);
+    line-height: 1.6;
+    outline: none;
+    resize: vertical;
+    transition: var(--transition-fast);
+}
+
+.form-group textarea:focus {
+    border-color: var(--primary-light);
+    box-shadow: var(--shadow-glow);
+    background: rgba(15, 23, 42, 0.8);
+}
+
+.form-group textarea::placeholder {
+    color: var(--text-muted);
+}
+
+/* --------------------------------------------------------------
+   ตัวบอกขั้นตอน (Stepper)
+   -------------------------------------------------------------- */
+.booth-steps {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+}
+
+.booth-step {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.4);
+    border: 1px solid var(--card-border);
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    transition: var(--transition-fast);
+}
+
+.booth-step.active {
+    border-color: rgba(252, 211, 77, 0.5);
+    background: rgba(245, 158, 11, 0.16);
+    color: var(--text-main);
+}
+
+.booth-step.done {
+    border-color: rgba(16, 185, 129, 0.45);
+    background: rgba(16, 185, 129, 0.12);
+    color: #a7f3d0;
+}
+
+.booth-step-num {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-en);
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.booth-step.active .booth-step-num { background: var(--booth-warm); color: #1f1300; }
+.booth-step.done .booth-step-num { background: var(--success); color: #04241a; }
+
+.booth-step-arrow {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/* --------------------------------------------------------------
+   ป้ายอธิบายเกณฑ์การให้คะแนน (Legend)
+   -------------------------------------------------------------- */
+.rating-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    background: rgba(15, 23, 42, 0.35);
+    border: 1px dashed var(--card-border);
+    border-radius: var(--radius-md);
+    padding: 12px 14px;
+    margin-bottom: 20px;
+}
+
+.rating-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.rating-legend-score {
+    font-family: var(--font-en);
+    font-weight: 700;
+    color: var(--booth-warm-light);
+    background: rgba(245, 158, 11, 0.15);
+    border: 1px solid rgba(252, 211, 77, 0.3);
+    border-radius: 6px;
+    padding: 1px 8px;
+}
+
+/* --------------------------------------------------------------
+   กลุ่มคำถามแบบมาตรประมาณค่า (Likert Scale)
+   -------------------------------------------------------------- */
+.rating-group-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--booth-warm-light);
+    margin: 22px 0 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--card-border);
+}
+
+.rating-group-title:first-of-type { margin-top: 0; }
+
+.rating-item {
+    background: rgba(15, 23, 42, 0.32);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    transition: var(--transition-fast);
+}
+
+.rating-item.answered {
+    border-color: rgba(16, 185, 129, 0.35);
+    background: rgba(16, 185, 129, 0.06);
+}
+
+.rating-item.missing {
+    border-color: rgba(239, 68, 68, 0.6);
+    background: rgba(239, 68, 68, 0.08);
+}
+
+.rating-question {
+    font-size: 0.93rem;
+    line-height: 1.55;
+    margin-bottom: 12px;
+    display: flex;
+    gap: 8px;
+}
+
+.rating-question-no {
+    font-family: var(--font-en);
+    font-weight: 700;
+    color: var(--primary-light);
+    flex-shrink: 0;
+}
+
+.rating-options {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+}
+
+.rating-option {
+    position: relative;
+}
+
+.rating-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.rating-option label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    padding: 9px 2px;
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--card-border);
+    cursor: pointer;
+    transition: var(--transition-fast);
+    text-align: center;
+    min-height: 58px;
+}
+
+.rating-option label:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+.rating-option-score {
+    font-family: var(--font-en);
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.rating-option-text {
+    font-size: 0.66rem;
+    color: var(--text-muted);
+    line-height: 1.2;
+}
+
+.rating-option input[type="radio"]:checked + label {
+    background: linear-gradient(135deg, var(--booth-warm) 0%, var(--booth-nest) 100%);
+    border-color: var(--booth-warm-light);
+    color: #1f1300;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);
+}
+
+.rating-option input[type="radio"]:checked + label .rating-option-text {
+    color: rgba(31, 19, 0, 0.75);
+}
+
+.rating-option input[type="radio"]:focus-visible + label {
+    outline: 2px solid var(--primary-light);
+    outline-offset: 2px;
+}
+
+@media (max-width: 480px) {
+    .rating-option-text { font-size: 0.58rem; }
+    .rating-option label { min-height: 54px; padding: 7px 1px; }
+}
+
+/* --------------------------------------------------------------
+   ตัวเลือกแบบชิป (Checkbox / Radio pills)
+   -------------------------------------------------------------- */
+.chip-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.chip {
+    position: relative;
+}
+
+.chip input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.chip label {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--card-border);
+    font-size: 0.86rem;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.chip label:hover { background: rgba(255, 255, 255, 0.1); }
+
+.chip input:checked + label {
+    background: rgba(79, 70, 229, 0.35);
+    border-color: var(--primary-light);
+    color: #fff;
+    box-shadow: var(--shadow-glow);
+}
+
+.chip input:focus-visible + label {
+    outline: 2px solid var(--primary-light);
+    outline-offset: 2px;
+}
+
+/* --------------------------------------------------------------
+   คะแนนภาพรวมแบบดาว
+   -------------------------------------------------------------- */
+.star-rating {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin: 6px 0 10px;
+}
+
+.star-rating button {
+    background: none;
+    border: none;
+    font-size: 2.1rem;
+    line-height: 1;
+    cursor: pointer;
+    filter: grayscale(1) opacity(0.45);
+    transition: var(--transition-fast);
+    padding: 2px;
+}
+
+.star-rating button:hover { transform: scale(1.15); }
+.star-rating button.on { filter: none; transform: scale(1.05); }
+
+.star-caption {
+    text-align: center;
+    color: var(--booth-warm-light);
+    font-weight: 600;
+    min-height: 24px;
+    font-size: 0.95rem;
+}
+
+/* --------------------------------------------------------------
+   สรุปคะแนนบนบัตรผลการประเมิน
+   -------------------------------------------------------------- */
+.score-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    margin: 18px 0;
+}
+
+.score-summary-box {
+    background: rgba(15, 23, 42, 0.45);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    padding: 14px;
+    text-align: center;
+}
+
+.score-summary-label {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+}
+
+.score-summary-value {
+    display: block;
+    font-family: var(--font-en);
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--booth-warm-light);
+}
+
+.score-summary-desc {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 3px;
+}
+
+/* --------------------------------------------------------------
+   แถบความคืบหน้าการกรอกแบบประเมิน
+   -------------------------------------------------------------- */
+.progress-wrap {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgba(15, 23, 42, 0.9);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    padding: 10px 14px;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--booth-warm) 0%, var(--success) 100%);
+    border-radius: 999px;
+    transition: width 0.35s ease;
+}
+
+.progress-text {
+    font-family: var(--font-en);
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+/* --------------------------------------------------------------
+   ตารางแปลผลค่าเฉลี่ยบนแดชบอร์ด
+   -------------------------------------------------------------- */
+.interpret-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+}
+
+.interpret-table th,
+.interpret-table td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--card-border);
+}
+
+.interpret-table th {
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+}
+
+.interpret-table td.num {
+    font-family: var(--font-en);
+    text-align: center;
+    white-space: nowrap;
+}
+
+.interpret-table tr.group-row td {
+    background: rgba(79, 70, 229, 0.16);
+    font-weight: 700;
+    color: var(--primary-light);
+}
+
+.level-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.76rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.level-5 { background: rgba(16, 185, 129, 0.2); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.4); }
+.level-4 { background: rgba(59, 130, 246, 0.2); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.4); }
+.level-3 { background: rgba(245, 158, 11, 0.2); color: var(--booth-warm-light); border: 1px solid rgba(245, 158, 11, 0.4); }
+.level-2 { background: rgba(249, 115, 22, 0.2); color: #fdba74; border: 1px solid rgba(249, 115, 22, 0.4); }
+.level-1 { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.4); }
+
+/* กล่องข้อเสนอแนะบนแดชบอร์ด */
+.comment-item {
+    background: rgba(15, 23, 42, 0.4);
+    border: 1px solid var(--card-border);
+    border-left: 3px solid var(--booth-warm);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    margin-bottom: 10px;
+}
+
+.comment-meta {
+    font-size: 0.76rem;
+    color: var(--text-muted);
+    margin-bottom: 5px;
+}
+
+.comment-text {
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.comment-list {
+    max-height: 340px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+/* --------------------------------------------------------------
+   การพิมพ์ (พิมพ์เฉพาะบัตร/รายงาน)
+   -------------------------------------------------------------- */
+@media print {
+    .no-print { display: none !important; }
+    body { background: #fff !important; color: #000 !important; }
+}
